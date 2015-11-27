@@ -5,6 +5,9 @@
 #include <map>
 #include <thread>
 #include "QtCore\qdebug.h"
+#include "QtCore\qobject.h"
+#include "QtCore\qthread.h"
+#include "qimage.h"
 
 using namespace std;
 
@@ -130,13 +133,11 @@ namespace graph{
 	{
 	public:
 		Node();
-		Node(string _Id, string _IP, string _Location, vector<ExitPoint> _exitPoints);
+		Node(string _nodeId, string _videoLink, vector<ExitPoint> _exitPoints);
 		~Node();
 
-		string Id;
-		int ThreadId;
-		string IP;
-		string Location; //physical
+		string videoLink;
+		string nodeId;
 		vector<ExitPoint> exitPoints;
 	};
 

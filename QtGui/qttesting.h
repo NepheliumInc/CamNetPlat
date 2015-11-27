@@ -20,7 +20,10 @@ public:
 
 private:
 	Ui::QtTestingClass ui;
-	map<string, ThreadForNode*> nodeMap;
+
+	map<string, ThreadForNode*> nodeToThreadMap;
+
+	map<string, ThreadForNode*> completedThreadMap;
 	map<string, QImage> frameMap;
 	map<string, QLabel*> lblMap;
 	int threadCount;

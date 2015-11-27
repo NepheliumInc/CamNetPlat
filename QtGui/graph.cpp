@@ -23,9 +23,14 @@ int Graph::initGraph()
 {
 	vector<graph::ExitPoint> exitPointsList{ { 8, make_pair(20, 20), make_pair(50, 100) } };
 
-	addNode(Node("C001", "E:/Final Year/project/human tracking/coding/Videos/PRG6.avi", "GR1", exitPointsList));
-	addNode(Node("C002", "E:/Final Year/project/human tracking/coding/Videos/PRG9.avi", "GR2", exitPointsList));
-	addNode(Node("C003", "E:/Final Year/project/human tracking/coding/Videos/PRG23.avi", "GR3", exitPointsList));
+	addNode(Node("C001", "C:/AdaptiveCameraNetworkPack/Videos/PRG1.avi", exitPointsList));
+	addNode(Node("C002", "C:/AdaptiveCameraNetworkPack/Videos/PRG6.avi", exitPointsList));
+	addNode(Node("C003", "C:/AdaptiveCameraNetworkPack/Videos/PRG7.avi", exitPointsList));
+	addNode(Node("C004", "C:/AdaptiveCameraNetworkPack/Videos/PRG14.avi", exitPointsList));
+	addNode(Node("C005", "C:/AdaptiveCameraNetworkPack/Videos/PRG22.avi", exitPointsList));
+	addNode(Node("C006", "C:/AdaptiveCameraNetworkPack/Videos/PRG23.avi", exitPointsList));
+	addNode(Node("C007", "C:/AdaptiveCameraNetworkPack/Videos/PRG28.avi", exitPointsList));
+	addNode(Node("C008", "C:/AdaptiveCameraNetworkPack/Videos/PRG29.avi", exitPointsList));
 
 	addNeighbour("C001", "C002", 8, 1);
 	addNeighbour("C002", "C001", 2, 1);
@@ -64,18 +69,16 @@ Node * Graph::getNode(string node_id)
 
 bool Graph::addNode(Node node)
 {
-	Nodes.insert(map<string, Node>::value_type(node.Id, node));
+	Nodes.insert(map<string, Node>::value_type(node.nodeId, node));
 	vector<vector<pair<string, int>>> vect(9);
-	Edges[node.Id] = vect;
+	Edges[node.nodeId] = vect;
 	return true;
 }
 
 bool Graph::editNode(Node node)
 {
-	Nodes[node.Id].IP = node.IP;
-	Nodes[node.Id].Location = node.Location;
-	Nodes[node.Id].ThreadId = node.ThreadId;
-	Nodes[node.Id].exitPoints = node.exitPoints;
+	Nodes[node.nodeId].videoLink = node.videoLink;
+	Nodes[node.nodeId].exitPoints = node.exitPoints;
 	return true;
 }
 
@@ -97,7 +100,7 @@ vector<vector<pair<string, int>>> Graph::getNeighbours(string base_node_id)
 
 bool Graph::addNeighbour(string base_node_id, Node new_node, int location_in_metrix, int weight)
 {
-	if (Nodes.count(new_node.Id) == 0)
+	if (Nodes.count(new_node.nodeId) == 0)
 	{
 		Graph::addNode(new_node);
 	}
@@ -106,7 +109,7 @@ bool Graph::addNeighbour(string base_node_id, Node new_node, int location_in_met
 		qDebug() << "# ERROR :: at addNeighbour - new node is already exist. Use other override of addNeighbour.\n";
 		return false;
 	}
-	return addNeighbour(base_node_id, new_node.Id, location_in_metrix, weight);
+	return addNeighbour(base_node_id, new_node.nodeId, location_in_metrix, weight);
 }
 
 bool Graph::addNeighbour(string base_node_id, string new_node_id, int location_in_metrix, int weight)

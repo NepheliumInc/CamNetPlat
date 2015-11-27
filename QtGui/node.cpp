@@ -5,11 +5,10 @@ using namespace graph;
 
 Node::Node(){}
 
-Node::Node(string _Id, string _IP, string _Location, vector<ExitPoint> _exitPoints)
+Node::Node(string _nodeId, string _videoLink, vector<ExitPoint> _exitPoints)
 {
-	Id = _Id;
-	IP = _IP;
-	Location = _Location;
+	videoLink = _videoLink;
+	nodeId = _nodeId;
 	exitPoints = _exitPoints;
 }
 

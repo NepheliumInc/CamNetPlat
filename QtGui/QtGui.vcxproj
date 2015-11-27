@@ -196,7 +196,6 @@
     <ClCompile Include="node.cpp" />
     <ClCompile Include="ProfileTransferObj.cpp" />
     <ClCompile Include="qttesting.cpp" />
-    <ClCompile Include="Source.cpp" />
     <ClCompile Include="threadfornode.cpp" />
     <ClCompile Include="TrackingObject.cpp" />
     <ClCompile Include="VideoProcessing.cpp" />
