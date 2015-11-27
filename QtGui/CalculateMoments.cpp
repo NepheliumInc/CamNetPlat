@@ -46,7 +46,7 @@ struct HumanProportions{
 };
 
 
-void mainX(int argc, char *argv[])
+void mainCM(int argc, char *argv[])
 {
 	//QCoreApplication app(argc, argv);
 	QApplication app(argc, argv);
