@@ -20,8 +20,8 @@ QtTesting::QtTesting(QWidget *parent)
 	this->lblMap["C001"] = ui.lblCamera1;
 	this->lblMap["C002"] = ui.lblCamera2;
 
-	thread1->videoLink = "E:/Final Year/project/human tracking/coding/Videos/PRG6.avi";
-	thread2->videoLink = "E:/Final Year/project/human tracking/coding/Videos/PRG9.avi";
+	thread1->videoLink = "C:/AdaptiveCameraNetworkPack/Videos/PRG6.avi";
+	thread2->videoLink = "C:/AdaptiveCameraNetworkPack/Videos/PRG29.avi";
 
 	thread1->start();
 	thread2->start();
