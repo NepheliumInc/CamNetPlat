@@ -15,8 +15,13 @@ public:
 	QtTesting(QWidget *parent = 0);
 	~QtTesting();
 
+	QWaitCondition isNotShown;
+	QMutex mutex;
+
+
 	public slots:
 	void recieveFrameFromThreads(QImage outImage, ThreadForNode* thread);
+	void finishedThreads();
 
 private:
 	Ui::QtTestingClass ui;

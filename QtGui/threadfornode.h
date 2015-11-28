@@ -15,6 +15,9 @@
 
 #include "VideoProcessing.h"
 
+#include "QtCore\qmutex.h"
+#include "QtCore\qwaitcondition.h"
+
 using namespace models;
 using namespace cv;
 
@@ -35,10 +38,13 @@ public:
 	string nodeId;
 	vector<graph::ExitPoint> exitPoints;
 	bool acknowledged;
+	QWaitCondition* isNotShown;
+	QMutex* mutex;
 
 signals:
 	void sendFrameToMain(QImage outImage, ThreadForNode* thread);
 	void sendProfileToNode(ProfileTransferObj profile, ThreadForNode* nodeThread);
+	void sendFinishedToMain();
 
 private:
 	MessagePasser* msgPasser;

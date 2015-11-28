@@ -17,6 +17,8 @@ QtTesting::QtTesting(QWidget *parent)
 		thread->nodeId = it->nodeId;
 		thread->videoLink = it->videoLink;
 		thread->exitPoints = it->exitPoints;
+		thread->isNotShown = &isNotShown;
+		thread->mutex = &mutex;
 		nodeToThreadMap[it->nodeId] = thread;
 	}
 
@@ -24,9 +26,11 @@ QtTesting::QtTesting(QWidget *parent)
 	{
 		connect(it->second, SIGNAL(sendFrameToMain(QImage, ThreadForNode*)),
 			this, SLOT(recieveFrameFromThreads(QImage, ThreadForNode*)));
+		connect(it->second, SIGNAL(sendFinishedToMain()),
+			this, SLOT(finishedThreads()));
 	}
 
-	for (int i = 0; i < uiLblVector.size(); i++)
+	for (int i = 0; i < nodes.size(); i++)
 	{
 		this->lblMap[nodes[i].nodeId] = uiLblVector[i];
 	}
@@ -73,6 +77,8 @@ void QtTesting::recieveFrameFromThreads(QImage outImage, ThreadForNode* thread)
 		frameMap[thread->nodeId] = outImage;
 		completedThreadMap[thread->nodeId] = thread;
 	}
+	/*if (completedThreadMap.size() > threadCount)
+		__debugbreak();*/
 	if (completedThreadMap.size() == threadCount)
 	{
 		for (map<string, QImage>::const_iterator i = frameMap.begin(); i != frameMap.end(); i++)
@@ -83,7 +89,17 @@ void QtTesting::recieveFrameFromThreads(QImage outImage, ThreadForNode* thread)
 		{
 			i->second->acknowledged = true;
 		}
+
+		mutex.lock();
+			isNotShown.wakeAll();
+		mutex.unlock();
+
 		completedThreadMap.clear();
 		frameMap.clear();
 	}
+}
+
+void QtTesting::finishedThreads()
+{
+	threadCount -= 1;
 }

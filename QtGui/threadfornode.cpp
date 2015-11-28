@@ -29,62 +29,60 @@ void ThreadForNode::run()
 	Mat fgMaskMOG2;
 	Ptr<BackgroundSubtractor> pMOG2 = new BackgroundSubtractorMOG2(300, 32, true);
 
-	if (!cap.grab())
+	if (!cap.isOpened())
 	{
 		qDebug() << "Error loding video '" << QString::fromStdString(videoLink) << "'";
 	}
-
-	while (cap.grab())
+	cap.set(CV_CAP_PROP_POS_FRAMES, 9000);
+	while (cap.read(frame))
 	{
-		cap.read(frame);
-		
 		// ////////////////// //
 		// process begin here //
 		// ////////////////// //
 
-		blobs.clear();
-		unidentifiedBlobs.clear();
-		humanBlobs.clear();
+		//blobs.clear();
+		//unidentifiedBlobs.clear();
+		//humanBlobs.clear();
 
-		// blob detection
-		if (_vProcessing.blobDetection(frame, pMOG2, fgMaskMOG2, &blobs) == 0)
-		{
-			waitForAcknowledge();
-			QImage outImage((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
-			emit sendFrameToMain(outImage, this);
-			this->acknowledged = false;
-			continue;	// If no blobs detected continue while
-		}
-		if (trackingHumanBlobs.empty())	// if no human blobs tracked yet
-		{
-			unidentifiedBlobs = blobs;	// all blobs are unindentified
-		}
-		else	// if there are human blobs tracked in previous frames
-		{
-			_vProcessing.dataAssociation(&blobs, &trackingHumanBlobs, &unidentifiedBlobs, &missingHumanBlobs);
-		}
+		//// blob detection
+		//if (_vProcessing.blobDetection(frame, pMOG2, fgMaskMOG2, &blobs) == 0)
+		//{
+		//	waitForAcknowledge();
+		//	QImage outImage((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
+		//	emit sendFrameToMain(outImage, this);
+		//	this->acknowledged = false;
+		//	continue;	// If no blobs detected continue while
+		//}
+		//if (trackingHumanBlobs.empty())	// if no human blobs tracked yet
+		//{
+		//	unidentifiedBlobs = blobs;	// all blobs are unindentified
+		//}
+		//else	// if there are human blobs tracked in previous frames
+		//{
+		//	_vProcessing.dataAssociation(&blobs, &trackingHumanBlobs, &unidentifiedBlobs, &missingHumanBlobs);
+		//}
 
-		if (!(unidentifiedBlobs.empty()))
-		{
-			_vProcessing.humanDetection(&unidentifiedBlobs, &frame, &humanBlobs);
-		}
+		//if (!(unidentifiedBlobs.empty()))
+		//{
+		//	_vProcessing.humanDetection(&unidentifiedBlobs, &frame, &humanBlobs);
+		//}
 
-		if (!(humanBlobs.empty()))
-		{
-			_vProcessing.checkInProfiles(&humanBlobs, &possibleProfileList, &missingHumanBlobs, &trackingHumanBlobs);
-		}
+		//if (!(humanBlobs.empty()))
+		//{
+		//	_vProcessing.checkInProfiles(&humanBlobs, &possibleProfileList, &missingHumanBlobs, &trackingHumanBlobs);
+		//}
 
-		if (!(humanBlobs.empty()))
-		{
-			_vProcessing.initTrackingObject(&humanBlobs, &trackingHumanBlobs);
-		}
+		//if (!(humanBlobs.empty()))
+		//{
+		//	_vProcessing.initTrackingObject(&humanBlobs, &trackingHumanBlobs);
+		//}
 
-		if (!(trackingHumanBlobs.empty()))
-		{
-			_vProcessing.kalmanCorrectAndPredict(&trackingHumanBlobs);
-			//_vProcessing.informAdjecentNodes(&exitPoints, &trackingHumanBlobs);
-			//_vProcessing.UpdateCentralProfiles(&trackingHumanBlobs);
-		}
+		//if (!(trackingHumanBlobs.empty()))
+		//{
+		//	_vProcessing.kalmanCorrectAndPredict(&trackingHumanBlobs);
+		//	//_vProcessing.informAdjecentNodes(&exitPoints, &trackingHumanBlobs);
+		//	//_vProcessing.UpdateCentralProfiles(&trackingHumanBlobs);
+		//}
 
 
 
@@ -150,7 +148,17 @@ void ThreadForNode::run()
 
 		//  end process here  //
 
+		
 		waitForAcknowledge();
+		if (cap.get(CV_CAP_PROP_POS_FRAMES) == cap.get(CV_CAP_PROP_FRAME_COUNT))
+		{
+			frame = Mat::zeros(1, 1, CV_64F);
+			putText(frame, "END OF FILE!", Point(frame.rows / 2, frame.cols / 2), FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 255, 255), 2);
+			QImage outImage((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
+			emit sendFrameToMain(outImage, this);
+			emit sendFinishedToMain();
+			break;
+		}
 		QImage outImage((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
 		emit sendFrameToMain(outImage, this);
 		this->acknowledged = false;
@@ -167,5 +175,12 @@ void ThreadForNode::updateProfileList(ProfileTransferObj profile)
 
 void ThreadForNode::waitForAcknowledge()
 {
-	while (!acknowledged);
+	if (!acknowledged)
+	{
+		mutex->lock();
+			isNotShown->wait(mutex);
+		mutex->unlock();
+	}
+	//while (!acknowledged);
+
 }
