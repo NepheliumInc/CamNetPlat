@@ -40,11 +40,24 @@ void ThreadForNode::run()
 		// process begin here //
 		// ////////////////// //
 
-		//blobs.clear();
-		//unidentifiedBlobs.clear();
-		//humanBlobs.clear();
 
-		//// blob detection
+
+		gpu::GpuMat Mog_Mask_g, Mog_MaskMorpho_g;
+
+		blobs.clear();
+		unidentifiedBlobs.clear();
+		humanBlobs.clear();
+
+		//blob detection
+		if (_vProcessing.GPU_BlobDetection(frame, pMOG2, fgMaskMOG2, &blobs) == 0)
+		{
+			waitForAcknowledge();
+			QImage outImage((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
+			emit sendFrameToMain(outImage, this);
+			this->acknowledged = false;
+			continue;	// If no blobs detected continue while
+		}
+
 		//if (_vProcessing.blobDetection(frame, pMOG2, fgMaskMOG2, &blobs) == 0)
 		//{
 		//	waitForAcknowledge();
@@ -53,37 +66,37 @@ void ThreadForNode::run()
 		//	this->acknowledged = false;
 		//	continue;	// If no blobs detected continue while
 		//}
-		//if (trackingHumanBlobs.empty())	// if no human blobs tracked yet
-		//{
-		//	unidentifiedBlobs = blobs;	// all blobs are unindentified
-		//}
-		//else	// if there are human blobs tracked in previous frames
-		//{
-		//	_vProcessing.dataAssociation(&blobs, &trackingHumanBlobs, &unidentifiedBlobs, &missingHumanBlobs);
-		//}
 
-		//if (!(unidentifiedBlobs.empty()))
-		//{
-		//	_vProcessing.humanDetection(&unidentifiedBlobs, &frame, &humanBlobs);
-		//}
+		if (trackingHumanBlobs.empty())	// if no human blobs tracked yet
+		{
+			unidentifiedBlobs = blobs;	// all blobs are unindentified
+		}
+		else	// if there are human blobs tracked in previous frames
+		{
+			_vProcessing.dataAssociation(&blobs, &trackingHumanBlobs, &unidentifiedBlobs, &missingHumanBlobs);
+		}
 
-		//if (!(humanBlobs.empty()))
-		//{
-		//	_vProcessing.checkInProfiles(&humanBlobs, &possibleProfileList, &missingHumanBlobs, &trackingHumanBlobs);
-		//}
+		if (!(unidentifiedBlobs.empty()))
+		{
+			_vProcessing.humanDetection(&unidentifiedBlobs, &frame, &humanBlobs);
+		}
 
-		//if (!(humanBlobs.empty()))
-		//{
-		//	_vProcessing.initTrackingObject(&humanBlobs, &trackingHumanBlobs);
-		//}
+		if (!(humanBlobs.empty()))
+		{
+			_vProcessing.checkInProfiles(&humanBlobs, &possibleProfileList, &missingHumanBlobs, &trackingHumanBlobs);
+		}
 
-		//if (!(trackingHumanBlobs.empty()))
-		//{
-		//	_vProcessing.kalmanCorrectAndPredict(&trackingHumanBlobs);
-		//	//_vProcessing.informAdjecentNodes(&exitPoints, &trackingHumanBlobs);
-		//	//_vProcessing.UpdateCentralProfiles(&trackingHumanBlobs);
-		//}
+		if (!(humanBlobs.empty()))
+		{
+			_vProcessing.initTrackingObject(&humanBlobs, &trackingHumanBlobs);
+		}
 
+		if (!(trackingHumanBlobs.empty()))
+		{
+			_vProcessing.kalmanCorrectAndPredict(&trackingHumanBlobs);
+			//_vProcessing.informAdjecentNodes(&exitPoints, &trackingHumanBlobs);
+			//_vProcessing.UpdateCentralProfiles(&trackingHumanBlobs);
+		}
 
 
 

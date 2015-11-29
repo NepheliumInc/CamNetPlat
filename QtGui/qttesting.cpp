@@ -72,6 +72,7 @@ QtTesting::~QtTesting()
 void QtTesting::recieveFrameFromThreads(QImage outImage, ThreadForNode* thread)
 {
 	int x = outImage.byteCount();
+	outImage = outImage.scaled(340, 255, Qt::KeepAspectRatio);
 	if (completedThreadMap.count(thread->nodeId) == 0)
 	{
 		frameMap[thread->nodeId] = outImage;
