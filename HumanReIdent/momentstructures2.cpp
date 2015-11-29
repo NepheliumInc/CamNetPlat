@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "momentstructures2.h"
 
+//Data structures derived to handle color moments
 MomentStructures2::MomentStructures2()
 {
 
@@ -73,8 +74,6 @@ Region::Region(){
 	this->startCol = 0;
 	this->endRow = 0;
 	this->endCol = 0;
-
-
 }
 
 Region::~Region(){

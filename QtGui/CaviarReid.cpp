@@ -85,7 +85,6 @@ void mainHITREC(int argc, char *argv[])
 		qDebug() << humanId << "";
 		qDebug() << hitIdX << endl;
 
-		//cvtColor(boxImage, cmaskImage, CV_BGR2GRAY);
 		double pixelCount = 0;
 		double region1tot0 = 0;
 		double region1tot1 = 0;

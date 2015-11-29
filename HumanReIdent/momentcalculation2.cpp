@@ -12,6 +12,102 @@ MomentCalculation2::~MomentCalculation2()
 
 }
 
+double MomentCalculation2::getDistanceBetweenBlobs(Blob *controlBlob, Blob *testingBlob)
+{
+	double total = 0;
+	vector<Region> controlRegions = controlBlob->getAllRegions();
+	vector<Region> testingRegions = testingBlob->getAllRegions();
+	double cHueCoef = 0.7, cSatCoef = 0.2, cValCoef = 0.1;
+	double rHeadCoef = 0.1, rTorsCoef = 0.5, rLegCoef = 0.4;
+	std::map<int, double> regionMap;
+	regionMap[0] = rHeadCoef, regionMap[1] = rTorsCoef, regionMap[2] = rLegCoef;
+	double totalDistanceSquared = 0;
+
+
+
+	MomentAverage* cRAve;
+	MomentAverage* tRAve;
+	MomentStandardDeviation* cRStdDev;
+	MomentStandardDeviation* tRStdDev;
+	MomentSkewness* cRSkew;
+	MomentSkewness* tRSkew;
+	for (int rId = 0; rId < 3; rId++)
+	{
+		cRAve = controlRegions[rId].getAverageMoment(); //c = control , R = Region
+		tRAve = testingRegions[rId].getAverageMoment(); //t = testing
+		double rAveDistance = cHueCoef*qPow(cRAve->channel0 - tRAve->channel0, 2) +
+			cSatCoef*qPow(cRAve->channel1 - tRAve->channel1, 2) +
+			cValCoef*qPow(cRAve->channel2 - tRAve->channel2, 2);
+
+		cRStdDev = controlRegions[rId].getStandardDeviationMoment(); //c = control , R = Region
+		tRStdDev = testingRegions[rId].getStandardDeviationMoment(); //t = testing
+		double rStandardDev = cHueCoef*(double)qPow(cRStdDev->channel0 - tRStdDev->channel0, 2) +
+			cSatCoef*(double)qPow(cRStdDev->channel1 - tRStdDev->channel1, 2) +
+			cValCoef*(double)qPow(cRStdDev->channel2 - tRStdDev->channel2, 2);
+
+		cRSkew = controlRegions[rId].getSkewnessMoment(); //c = control , R = Region
+		tRSkew = testingRegions[rId].getSkewnessMoment(); //t = testing
+		double rSkewNess = cHueCoef*(double)qPow(cRSkew->channel0 - tRSkew->channel0, 2) +
+			cSatCoef*(double)qPow(cRSkew->channel1 - tRSkew->channel1, 2) +
+			cValCoef*(double)qPow(cRSkew->channel2 - tRSkew->channel2, 2);
+
+		totalDistanceSquared += regionMap[rId] * (rAveDistance + rStandardDev + rSkewNess);
+	}
+	totalDistanceSquared = qSqrt(totalDistanceSquared);
+	delete	cRAve;
+	delete	tRAve;
+	delete	cRStdDev;
+	delete	tRStdDev;
+	delete	cRSkew;
+	delete	tRSkew;
+	return totalDistanceSquared;
+}
+
+Blob MomentCalculation2::getMomentsInaBlob(Mat boxImage, Mat cmaskImage, string blobId,string profileId){
+
+
+	cvtColor(boxImage, boxImage, CV_BGR2HSV);
+	//Average
+	HumanProportions prop;
+
+	int boxHeight = boxImage.rows;
+	double ratio = (double)boxHeight / (double)prop.height;
+	int region1Height = (int)(((double)prop.head) * ratio);
+	int region2Height = (int)(((double)prop.gait) * ratio);
+	int region3Height = (int)(((double)prop.leg)	* ratio);
+
+	string placement = "Top";
+	Region region1(placement, 0, 0, region1Height, boxImage.cols);
+	MomentCalculation2 mcalc;
+	MomentAverage momentAverage1 = mcalc.getAverageColourInConvexRegion(boxImage, cmaskImage, &region1);
+	MomentStandardDeviation momentStandardDeviation1 = mcalc.getStandardDeviationInConvexRegion(boxImage, cmaskImage, &region1, &momentAverage1);
+	MomentSkewness momentSkewness1 = mcalc.getSkewnessnInConvexRegion(boxImage, cmaskImage, &region1, &momentAverage1);
+	region1.setMoments(&momentAverage1, &momentStandardDeviation1, &momentSkewness1);
+
+
+	placement = "Middle";
+	Region region2(placement, 0, 0, region2Height, boxImage.cols);
+	MomentAverage momentAverage2 = mcalc.getAverageColourInConvexRegion(boxImage, cmaskImage, &region2);
+	MomentStandardDeviation momentStandardDeviation2 = mcalc.getStandardDeviationInConvexRegion(boxImage, cmaskImage, &region2, &momentAverage2);
+	MomentSkewness momentSkewness2 = mcalc.getSkewnessnInConvexRegion(boxImage, cmaskImage, &region2, &momentAverage2);
+	region2.setMoments(&momentAverage2, &momentStandardDeviation2, &momentSkewness2);
+
+	placement = "Bottum";
+	Region region3(placement, 0, 0, region3Height, boxImage.cols);
+	MomentAverage momentAverage3 = mcalc.getAverageColourInConvexRegion(boxImage, cmaskImage, &region3);
+	MomentStandardDeviation momentStandardDeviation3 = mcalc.getStandardDeviationInConvexRegion(boxImage, cmaskImage, &region3, &momentAverage3);
+	MomentSkewness momentSkewness3 = mcalc.getSkewnessnInConvexRegion(boxImage, cmaskImage, &region3, &momentAverage3);
+	region3.setMoments(&momentAverage3, &momentStandardDeviation3, &momentSkewness3);
+
+
+	Blob blob(blobId, boxImage.rows, boxImage.cols);
+	blob.human_id_actual = profileId;
+	blob.addRegion(&region1);
+	blob.addRegion(&region2);
+	blob.addRegion(&region3);
+
+	return blob;
+}
 
 MomentAverage MomentCalculation2::getAverageColourInConvexRegion(Mat image, Mat imageMask, Region *region)
 {
@@ -114,6 +210,7 @@ MomentStandardDeviation MomentCalculation2::getStandardDeviationInConvexRegion(M
 	return momentStandardDeviation;
 
 }
+
 MomentSkewness MomentCalculation2::getSkewnessnInConvexRegion(Mat image, Mat imageMask, Region *region, MomentAverage *momentAverage)
 {
 	int pixelCount = 0;
