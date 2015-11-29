@@ -214,7 +214,8 @@ void caviar_hits::compareAllHits()
 
 	vector<string> imgIds;
 
-	/*
+	
+	/*//Get all imgids
 	string currentProfileQuery1 = "SELECT img_id FROM caviar_hits";
 	ResultSet *imgSpecificResult1 = stmt->executeQuery(currentProfileQuery1);
 	while (imgSpecificResult1->next())
@@ -224,84 +225,26 @@ void caviar_hits::compareAllHits()
 	vector<string> imgIds2(imgIds);
 	*/
 
-	/*Insert all combinations of caviar images
+	/*//Insert all combinations of caviar images
 	string insertQuery = "INSERT INTO caviar_hits_comparison(testing_image, control_image) VALUES('";
 	for (int i = 0; i < imgIds.size(); i++)
 	{
-	for (int j = i; j < imgIds.size(); j++)
-	{
-	string finalInsertQuery = insertQuery +  imgIds[i] + "','"+ imgIds2[j]+"')";
-	qDebug() << QString::fromStdString(finalInsertQuery);
-	stmt->executeUpdate(finalInsertQuery);
+		for (int j = i; j < imgIds.size(); j++)
+		{
+			string finalInsertQuery = insertQuery + imgIds[i] + "','" + imgIds2[j] + "')";
+			qDebug() << QString::fromStdString(finalInsertQuery);
+			stmt->executeUpdate(finalInsertQuery);
 
-	}
+		}
 	}*/
 
-	/*
-	for (int hitId = 1;; hitId++)
-	{
-	string tryGetCurrentImageQuery = "SELECT * FROM moments WHERE img_id LIKE";
-	if (profileId > 9)
-	{
-	tryGetCurrentImageQuery += "'00" + to_string(profileId) + "%'";
-	}
-	else
-	{
-	tryGetCurrentImageQuery += "'000" + to_string(profileId) + "%'";
-	}
-
-	ResultSet *imgSpecificResult = stmt->executeQuery(tryGetCurrentImageQuery);
-	int regionCounter = 0;
-	Region *region = new Region();
-
-	if (imgSpecificResult->rowsCount != 0)
-	{
-	while (imgSpecificResult->next())
-	{
-	getRegionFromResult(imgSpecificResult, region);
-	//region.regionId = to_string(regionCounter);
-	region->setRegionId(to_string(regionCounter));
-	regionCounter++;
-	blob1.addRegion(region);
-
-
-	}
-	for (int j = profileId; j < 73; j++)
-	{
-	string tryGetCurrentImageQuery = "SELECT * FROM moments WHERE img_id LIKE";
-	if (j > 9)
-	{
-	tryGetCurrentImageQuery += "'00" + to_string(profileId) + "%'";
-	}
-	else
-	{
-	tryGetCurrentImageQuery += "'000" + to_string(profileId) + "%'";
-	}
-
-	ResultSet *imgSpecificResult(stmt->executeQuery(tryGetCurrentImageQuery));
-	int regionCounter = 0;
-	Region region;
-	while (imgSpecificResult->next()) {
-	getRegionFromResult(imgSpecificResult, &region);
-	region.regionId = to_string(regionCounter);
-	regionCounter++;
-	blob2.addRegion(&region);
-	}
-	getDistanceBetweenBlobs(&blob1, &blob2);
-	}
-	}
-	else
-	{
-	break;
-	}
-	}*/
 
 
 
 	string currentProfileQuery1 = "SELECT control_image,testing_image FROM caviar_hits_comparison WHERE distance IS NULL";
 	ResultSet *imgSpecificResult1 = stmt->executeQuery(currentProfileQuery1);
 	int loopCounter = 0;
-	while (imgSpecificResult1->next() && false)//Not used
+	while (imgSpecificResult1->next())//Not used
 	{
 		string control_img_id = imgSpecificResult1->getString(1);
 		string testing_img_id = imgSpecificResult1->getString(2);
@@ -309,6 +252,16 @@ void caviar_hits::compareAllHits()
 		string check = mom_q + "img_id= '" + control_img_id + "'";
 		ResultSet *control_img_moments = stmt->executeQuery(mom_q + "img_id= '" + control_img_id+"'");
 		ResultSet *testing_img_moments = stmt->executeQuery(mom_q + "img_id= '" + testing_img_id+"'");
+
+		QString QTScontrol_img_id = QString::fromStdString(control_img_id);
+		QString QTStesting_img_id = QString::fromStdString(testing_img_id);
+		QStringRef QTScontrol_img_idSub(&QTScontrol_img_id,2, 2);
+		QStringRef QTStesting_img_idSub(&QTStesting_img_id, 2, 2);
+
+
+		int intcId = QTScontrol_img_idSub.toInt();
+		int inttId = QTStesting_img_idSub.toInt();
+		
 
 		Blob *blobControl = new Blob();
 		Blob *blobTesting = new Blob();
@@ -330,9 +283,12 @@ void caviar_hits::compareAllHits()
 		}
 		double distance = getDistanceBetweenBlobs(blobControl, blobTesting);
 		qDebug() << QString::fromStdString("The Distance for " + testing_img_id + " AND " + control_img_id + " is = " + to_string(distance));
-		string updateDistance = "UPDATE caviar_hits_comparison SET  distance = " + to_string(distance) + 
-								" WHERE control_image='" + control_img_id+ "' AND " +
-								"testing_image='" + testing_img_id+"'" ;
+		string updateDistance = "UPDATE caviar_hits_comparison SET  control_image_human_id=" 
+								+ to_string(intcId) 
+								+", testing_image_human_id=" + to_string(inttId) 
+								+" , distance = " + to_string(distance)
+								+" WHERE control_image='" + control_img_id
+								+"' AND testing_image='" + testing_img_id+"'" ;
 		stmt->executeUpdate(updateDistance);
 		delete regionControl;
 		delete regionTesting;

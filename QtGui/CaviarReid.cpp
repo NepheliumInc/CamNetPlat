@@ -47,7 +47,7 @@ struct HumanProportions{
 };
 
 
-void mainJ(int argc, char *argv[])
+void mainHITREC(int argc, char *argv[])
 {
 	//QCoreApplication app(argc, argv);
 	QApplication app(argc, argv);
@@ -55,7 +55,7 @@ void mainJ(int argc, char *argv[])
 	QStringList illegalFileTypes;
 	illegalFileTypes << ".exe" << ".dll" << ".py" << ".jar" << ".au3" << ".lua" << ".msi";
 
-	QString index = "H:\\Datasets\\CAVIAR4REID\\CAVIARa\\";
+	QString index = "J:\\Datasets\\CAVIAR4REID\\CAVIARa\\";
 	//QString actual = "C:\\Projects\\Output\\file1\\correct\\";
 	//H:\\Datasets\\CAVIAR4REID\\CAVIARa\\
 	ManageBlobExtracts manageBlobExtracts;
@@ -76,7 +76,7 @@ void mainJ(int argc, char *argv[])
 
 		Mat boxImage = imread((index + box_file_Name).toStdString());
 		Mat cmaskImage(boxImage.rows, boxImage.cols, CV_8UC1,Scalar(255));
-
+		cvtColor(boxImage, boxImage, CV_BGR2HSV);
 
 		QStringRef personIdString(&box_file_Name ,2,2);
 		QStringRef hitIdXString(&box_file_Name, 4, 3);
