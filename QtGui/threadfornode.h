@@ -6,13 +6,17 @@
 #include "QtCore\qthread.h"
 #include "qimage.h"
 #include "qdebug.h"
-#include "Models.h"
 
 #include <opencv2\core\core.hpp>
 #include <opencv2\imgproc\imgproc.hpp>
 #include <opencv2\video\tracking.hpp>
 #include <opencv2\video\background_segm.hpp>
 #include <opencv2\highgui\highgui.hpp>
+
+#include "VideoProcessing.h"
+
+#include "QtCore\qmutex.h"
+#include "QtCore\qwaitcondition.h"
 
 using namespace models;
 using namespace cv;
@@ -30,13 +34,17 @@ public:
 	void updateProfileList(ProfileTransferObj profile);
 	void waitForAcknowledge();
 
-	string nodeId;
 	string videoLink; // temp
+	string nodeId;
+	vector<graph::ExitPoint> exitPoints;
 	bool acknowledged;
+	QWaitCondition* isNotShown;
+	QMutex* mutex;
 
 signals:
 	void sendFrameToMain(QImage outImage, ThreadForNode* thread);
 	void sendProfileToNode(ProfileTransferObj profile, ThreadForNode* nodeThread);
+	void sendFinishedToMain();
 
 private:
 	MessagePasser* msgPasser;
