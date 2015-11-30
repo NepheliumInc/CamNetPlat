@@ -33,7 +33,7 @@ void ThreadForNode::run()
 	{
 		qDebug() << "Error loding video '" << QString::fromStdString(videoLink) << "'";
 	}
-	cap.set(CV_CAP_PROP_POS_FRAMES, 9000);
+	//cap.set(CV_CAP_PROP_POS_FRAMES, 9000);
 	while (cap.read(frame))
 	{
 		// ////////////////// //
@@ -49,16 +49,7 @@ void ThreadForNode::run()
 		humanBlobs.clear();
 
 		//blob detection
-		if (_vProcessing.GPU_BlobDetection(frame, pMOG2, fgMaskMOG2, &blobs) == 0)
-		{
-			waitForAcknowledge();
-			QImage outImage((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
-			emit sendFrameToMain(outImage, this);
-			this->acknowledged = false;
-			continue;	// If no blobs detected continue while
-		}
-
-		//if (_vProcessing.blobDetection(frame, pMOG2, fgMaskMOG2, &blobs) == 0)
+		//if (_vProcessing.GPU_BlobDetection(frame, pMOG2, fgMaskMOG2, &blobs) == 0)
 		//{
 		//	waitForAcknowledge();
 		//	QImage outImage((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
@@ -66,6 +57,15 @@ void ThreadForNode::run()
 		//	this->acknowledged = false;
 		//	continue;	// If no blobs detected continue while
 		//}
+
+		if (_vProcessing.blobDetection(frame, pMOG2, fgMaskMOG2, &blobs) == 0)
+		{
+			waitForAcknowledge();
+			QImage outImage((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
+			emit sendFrameToMain(outImage, this);
+			this->acknowledged = false;
+			continue;	// If no blobs detected continue while
+		}
 
 		if (trackingHumanBlobs.empty())	// if no human blobs tracked yet
 		{
