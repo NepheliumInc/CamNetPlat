@@ -49,11 +49,24 @@ struct HumanProportions{
 };
 
 
-void mainMANCAV(int argc, char *argv[])
+void main(int argc, char *argv[])
 {
 	//QCoreApplication app(argc, argv);
 	QApplication app(argc, argv);
 	caviar_hits cc;
+
+
+	/*string concat = "";
+	for (int i = 10; i < 73; i++)
+	{
+
+		string x = "update caviar_hits_comparison set testing_image_human_id = " + to_string(i) + " where testing_image like '00"+to_string(i)+"%';";
+		concat += x;
+	}*/
+	//select count(TruePositive), count(TrueNegative), count(FalseNegative), count(FalsePositive) from caviar_hits_comparison;
+	// UPDATE caviar_hits_comparison set TruePositive=TRUE where verdict=true and testing_image_human_id = control_image_human_id;
+	//UPDATE caviar_hits_comparison set Verdict=true where distance < 20;
+	//select * from caviar_hits_comparison where control_image like '0070%';
 	
 	cc.compareAllHits();
 

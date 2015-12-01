@@ -6,7 +6,7 @@ using namespace sql;
 using namespace mysql;
 using namespace std;
 
-
+//Add Human Hit to database for analysis
 void HumanHits::addHumanHit(string id, string path, string hit_id, double av0, double av1, double av2, double stdDev0, double stdDev1, double stdDev2, double skew0, double skew1, double skew2)
 {
 	driver = sql::mysql::get_mysql_driver_instance();
@@ -44,6 +44,8 @@ void HumanHits::addHumanHit(string id, string path, string hit_id, double av0, d
 
 }
 
+
+// Overload for Add Human Hit to database for analysis
 void HumanHits::addHumanHit(Blob *blob)
 {
 
@@ -53,15 +55,13 @@ void HumanHits::addHumanHit(Blob *blob)
 		HumanHits hh;
 		hh.addHumanHit(blob->hitId, region.regionId, region.getAverageMoment(), region.getStandardDeviationMoment(), region.getSkewnessMoment());
 
-
-		//addHumanHit(blob.id+"_"+region.id,"",blob.id,)
 	}
 
 	
 
 }
 
-
+// Overload to Add Human Hit to database for analysis
 void HumanHits::addHumanHit(string hitId, string regionId, MomentAverage *momentAverage, MomentStandardDeviation *momentStandardDeviation, MomentSkewness *momentSkewness)
 {
 	string id = hitId + "_" + regionId;
@@ -78,11 +78,6 @@ void HumanHits::addHumanHit(string hitId, string regionId, MomentAverage *moment
 	momentSkewness->channel0,
 	momentSkewness->channel1,
 	momentSkewness->channel2);
-
-
-	
-
-
 }
 
 
@@ -104,6 +99,7 @@ HumanHits::~HumanHits()
 
 }
 
+///TO BE DELETED! DO NOT INCLUDE UTILITY FUNCTION!!!!!!
 vector<string> stringSplit(string s, string delimiter = " "){
 
 	vector<string> splittedStrings;
@@ -119,7 +115,7 @@ vector<string> stringSplit(string s, string delimiter = " "){
 	splittedStrings.push_back(s);
 	return splittedStrings;
 }
-
+///TO BE DELETED! DO NOT INCLUDE!!!!!!
 vector<Profile> HumanHits::getAllProfilesInSecond(string absoluteTime, string cameraNode)
 {
 	vector<Profile> profiles;

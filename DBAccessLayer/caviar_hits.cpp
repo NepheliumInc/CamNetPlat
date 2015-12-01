@@ -12,6 +12,7 @@ caviar_hits::~caviar_hits()
 {
 }
 
+//Add moment information of caviar hits to database 
 void caviar_hits::addCaviarHit(string img_id, int region_id, int human_id_actual, double av0, double av1, double av2, double stdDev0, double stdDev1, double stdDev2, double skew0, double skew1, double skew2)
 {
 	driver = sql::mysql::get_mysql_driver_instance();
@@ -68,24 +69,18 @@ void caviar_hits::addCaviarHit(string img_id, int region_id, int human_id_actual
 	delete stmt;
 }
 
+//Add moment information of caviar hits to database OVERLOAD
 void caviar_hits::addCaviarHit(Blob *blob)
 {
 
 	for (auto &region : blob->getAllRegions()) // access by reference to avoid copying
 	{
-
 		caviar_hits hh;
 		hh.addCaviarHit(blob->hitId, region.regionId,blob->human_id_actual, region.getAverageMoment(), region.getStandardDeviationMoment(), region.getSkewnessMoment());
-
-
-		//addHumanHit(blob.id+"_"+region.id,"",blob.id,)
 	}
-
-
-
 }
 
-
+//Add moment information of caviar hits to database OVERLOAD
 void caviar_hits::addCaviarHit(string img_id, string region_id, string human_id_actual, MomentAverage *momentAverage, MomentStandardDeviation *momentStandardDeviation, MomentSkewness *momentSkewness)
 {
 	
@@ -116,13 +111,9 @@ void caviar_hits::addCaviarHit(string img_id, string region_id, string human_id_
 		momentSkewness->channel0,
 		momentSkewness->channel1,
 		momentSkewness->channel2);
-
-
-
-
-
 }
 
+//TO BE DELETED , DO NOT INCLUDE
 std::auto_ptr< sql::ResultSet > caviar_hits::getAllProfilesData()
 {
 	driver = sql::mysql::get_mysql_driver_instance();
@@ -137,15 +128,8 @@ std::auto_ptr< sql::ResultSet > caviar_hits::getAllProfilesData()
 	return res;
 }
 
-void getRegionFromResult( sql::ResultSet *res, Region *region)
-{
 
-	MomentAverage *momentAvg = new MomentAverage(res->getDouble("av0"), res->getDouble("av1"), res->getDouble("av2"));
-	MomentStandardDeviation *momentStdDev =  new MomentStandardDeviation(res->getDouble("stdDev0"), res->getDouble("stdDev1"), res->getDouble("stdDev2"));
-	MomentSkewness *momentSkew = new MomentSkewness(res->getDouble("skew0"), res->getDouble("skew1"), res->getDouble("skew2"));
-	region->setMoments(momentAvg, momentStdDev, momentSkew);
-}
-
+//MOVED TO momentcalculation2.cpp!!! DO NOT REINCLUDE
 double getDistanceBetweenBlobs(Blob *controlBlob, Blob *testingBlob)
 {
 	double total = 0;
@@ -197,6 +181,18 @@ double getDistanceBetweenBlobs(Blob *controlBlob, Blob *testingBlob)
 	return totalDistanceSquared;
 }
 
+
+//FILL REGION OBJECT FROM DATABASE ROW CURSOR
+void getRegionFromResult(sql::ResultSet *res, Region *region)
+{
+
+	MomentAverage *momentAvg = new MomentAverage(res->getDouble("av0"), res->getDouble("av1"), res->getDouble("av2"));
+	MomentStandardDeviation *momentStdDev = new MomentStandardDeviation(res->getDouble("stdDev0"), res->getDouble("stdDev1"), res->getDouble("stdDev2"));
+	MomentSkewness *momentSkew = new MomentSkewness(res->getDouble("skew0"), res->getDouble("skew1"), res->getDouble("skew2"));
+	region->setMoments(momentAvg, momentStdDev, momentSkew);
+}
+
+// CAVIAR REID DATA SET, FILLED DATABASE ANALYSIS CODE
 void caviar_hits::compareAllHits()
 {
 
@@ -214,7 +210,8 @@ void caviar_hits::compareAllHits()
 
 	vector<string> imgIds;
 
-	/*
+	
+	//Get all imgids
 	string currentProfileQuery1 = "SELECT img_id FROM caviar_hits";
 	ResultSet *imgSpecificResult1 = stmt->executeQuery(currentProfileQuery1);
 	while (imgSpecificResult1->next())
@@ -222,93 +219,44 @@ void caviar_hits::compareAllHits()
 		imgIds.push_back(imgSpecificResult1->getString(1));
 	}
 	vector<string> imgIds2(imgIds);
-	*/
 
-	/*Insert all combinations of caviar images
+	//Insert all combinations of caviar images
 	string insertQuery = "INSERT INTO caviar_hits_comparison(testing_image, control_image) VALUES('";
 	for (int i = 0; i < imgIds.size(); i++)
 	{
-	for (int j = i; j < imgIds.size(); j++)
-	{
-	string finalInsertQuery = insertQuery +  imgIds[i] + "','"+ imgIds2[j]+"')";
-	qDebug() << QString::fromStdString(finalInsertQuery);
-	stmt->executeUpdate(finalInsertQuery);
+		for (int j = i; j < imgIds.size(); j++)
+		{
+			string finalInsertQuery = insertQuery + imgIds[i] + "','" + imgIds2[j] + "')";
+			qDebug() << QString::fromStdString(finalInsertQuery);
+			stmt->executeUpdate(finalInsertQuery);
 
-	}
-	}*/
-
-	/*
-	for (int hitId = 1;; hitId++)
-	{
-	string tryGetCurrentImageQuery = "SELECT * FROM moments WHERE img_id LIKE";
-	if (profileId > 9)
-	{
-	tryGetCurrentImageQuery += "'00" + to_string(profileId) + "%'";
-	}
-	else
-	{
-	tryGetCurrentImageQuery += "'000" + to_string(profileId) + "%'";
+		}
 	}
 
-	ResultSet *imgSpecificResult = stmt->executeQuery(tryGetCurrentImageQuery);
-	int regionCounter = 0;
-	Region *region = new Region();
-
-	if (imgSpecificResult->rowsCount != 0)
-	{
-	while (imgSpecificResult->next())
-	{
-	getRegionFromResult(imgSpecificResult, region);
-	//region.regionId = to_string(regionCounter);
-	region->setRegionId(to_string(regionCounter));
-	regionCounter++;
-	blob1.addRegion(region);
-
-
-	}
-	for (int j = profileId; j < 73; j++)
-	{
-	string tryGetCurrentImageQuery = "SELECT * FROM moments WHERE img_id LIKE";
-	if (j > 9)
-	{
-	tryGetCurrentImageQuery += "'00" + to_string(profileId) + "%'";
-	}
-	else
-	{
-	tryGetCurrentImageQuery += "'000" + to_string(profileId) + "%'";
-	}
-
-	ResultSet *imgSpecificResult(stmt->executeQuery(tryGetCurrentImageQuery));
-	int regionCounter = 0;
-	Region region;
-	while (imgSpecificResult->next()) {
-	getRegionFromResult(imgSpecificResult, &region);
-	region.regionId = to_string(regionCounter);
-	regionCounter++;
-	blob2.addRegion(&region);
-	}
-	getDistanceBetweenBlobs(&blob1, &blob2);
-	}
-	}
-	else
-	{
-	break;
-	}
-	}*/
 
 
 
-	string currentProfileQuery1 = "SELECT control_image,testing_image FROM caviar_hits_comparison WHERE distance IS NULL";
-	ResultSet *imgSpecificResult1 = stmt->executeQuery(currentProfileQuery1);
+	string selectComparisonCoupleQuery = "SELECT control_image,testing_image FROM caviar_hits_comparison WHERE distance IS NULL";
+	ResultSet *imageCoupleResult = stmt->executeQuery(selectComparisonCoupleQuery);
 	int loopCounter = 0;
-	while (imgSpecificResult1->next() && false)//Not used
+	while (imgSpecificResult1->next())//Not used
 	{
-		string control_img_id = imgSpecificResult1->getString(1);
-		string testing_img_id = imgSpecificResult1->getString(2);
+		string control_img_id = imageCoupleResult->getString(1);
+		string testing_img_id = imageCoupleResult->getString(2);
 		string mom_q = "SELECT * FROM moments where ";
 		string check = mom_q + "img_id= '" + control_img_id + "'";
 		ResultSet *control_img_moments = stmt->executeQuery(mom_q + "img_id= '" + control_img_id+"'");
 		ResultSet *testing_img_moments = stmt->executeQuery(mom_q + "img_id= '" + testing_img_id+"'");
+
+		QString QTScontrol_img_id = QString::fromStdString(control_img_id);
+		QString QTStesting_img_id = QString::fromStdString(testing_img_id);
+		QStringRef QTScontrol_img_idSub(&QTScontrol_img_id,2, 2);
+		QStringRef QTStesting_img_idSub(&QTStesting_img_id, 2, 2);
+
+
+		int intcId = QTScontrol_img_idSub.toInt();
+		int inttId = QTStesting_img_idSub.toInt();
+		
 
 		Blob *blobControl = new Blob();
 		Blob *blobTesting = new Blob();
@@ -330,9 +278,12 @@ void caviar_hits::compareAllHits()
 		}
 		double distance = getDistanceBetweenBlobs(blobControl, blobTesting);
 		qDebug() << QString::fromStdString("The Distance for " + testing_img_id + " AND " + control_img_id + " is = " + to_string(distance));
-		string updateDistance = "UPDATE caviar_hits_comparison SET  distance = " + to_string(distance) + 
-								" WHERE control_image='" + control_img_id+ "' AND " +
-								"testing_image='" + testing_img_id+"'" ;
+		string updateDistance = "UPDATE caviar_hits_comparison SET  control_image_human_id=" 
+								+ to_string(intcId) 
+								+", testing_image_human_id=" + to_string(inttId) 
+								+" , distance = " + to_string(distance)
+								+" WHERE control_image='" + control_img_id
+								+"' AND testing_image='" + testing_img_id+"'" ;
 		stmt->executeUpdate(updateDistance);
 		delete regionControl;
 		delete regionTesting;
@@ -344,12 +295,6 @@ void caviar_hits::compareAllHits()
 	
 	delete imgSpecificResult1;
 
-	string evaluateDistance = "SELECT * FROM caviar_hits_comparison";
-	imgSpecificResult1 = stmt->executeQuery(currentProfileQuery1);
-
-
-
-	
 
 	
 }

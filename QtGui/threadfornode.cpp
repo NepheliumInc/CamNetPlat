@@ -25,9 +25,14 @@ void ThreadForNode::run()
 	vector<HumanBlob> humanBlobs, trackingHumanBlobs, possibleProfileList;
 	vector<MissingHumanBlob> missingHumanBlobs;
 
+	//gpu::GpuMat Mog_Mask_g, Mog_MaskMorpho_g;
+
 	VideoProcessing _vProcessing = VideoProcessing();
 	Mat fgMaskMOG2;
 	Ptr<BackgroundSubtractor> pMOG2 = new BackgroundSubtractorMOG2(300, 32, true);
+
+	//RNG rng(12345);
+	//vector<Vec4i> hierarchy;
 
 	if (!cap.isOpened())
 	{
@@ -43,6 +48,7 @@ void ThreadForNode::run()
 		blobs.clear();
 		unidentifiedBlobs.clear();
 		humanBlobs.clear();
+		//hierarchy.clear();
 
 		//// blob detection
 		if (_vProcessing.blobDetection(frame, pMOG2, fgMaskMOG2, &blobs) == 0)
@@ -147,6 +153,13 @@ void ThreadForNode::run()
 		//}
 
 		
+		/*for (int i = 0; i< trackingHumanBlobs.size(); i++)
+		{
+			Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0, 255), rng.uniform(0, 255));
+			drawContours(frame, trackingHumanBlobs, i, color, 2, 8, hierarchy, 0, Point());
+		}*/
+
+
 		waitForAcknowledge();
 		if (cap.get(CV_CAP_PROP_POS_FRAMES) == cap.get(CV_CAP_PROP_FRAME_COUNT))
 		{
