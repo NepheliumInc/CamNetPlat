@@ -40,49 +40,49 @@ void ThreadForNode::run()
 		// process begin here //
 		// ////////////////// //
 
-		//blobs.clear();
-		//unidentifiedBlobs.clear();
-		//humanBlobs.clear();
+		blobs.clear();
+		unidentifiedBlobs.clear();
+		humanBlobs.clear();
 
 		//// blob detection
-		//if (_vProcessing.blobDetection(frame, pMOG2, fgMaskMOG2, &blobs) == 0)
-		//{
-		//	waitForAcknowledge();
-		//	QImage outImage((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
-		//	emit sendFrameToMain(outImage, this);
-		//	this->acknowledged = false;
-		//	continue;	// If no blobs detected continue while
-		//}
-		//if (trackingHumanBlobs.empty())	// if no human blobs tracked yet
-		//{
-		//	unidentifiedBlobs = blobs;	// all blobs are unindentified
-		//}
-		//else	// if there are human blobs tracked in previous frames
-		//{
-		//	_vProcessing.dataAssociation(&blobs, &trackingHumanBlobs, &unidentifiedBlobs, &missingHumanBlobs);
-		//}
+		if (_vProcessing.blobDetection(frame, pMOG2, fgMaskMOG2, &blobs) == 0)
+		{
+			waitForAcknowledge();
+			QImage outImage((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
+			emit sendFrameToMain(outImage, this);
+			this->acknowledged = false;
+			continue;	// If no blobs detected continue while
+		}
+		if (trackingHumanBlobs.empty())	// if no human blobs tracked yet
+		{
+			unidentifiedBlobs = blobs;	// all blobs are unindentified
+		}
+		else	// if there are human blobs tracked in previous frames
+		{
+			_vProcessing.dataAssociation(&blobs, &trackingHumanBlobs, &unidentifiedBlobs, &missingHumanBlobs);
+		}
 
-		//if (!(unidentifiedBlobs.empty()))
-		//{
-		//	_vProcessing.humanDetection(&unidentifiedBlobs, &frame, &humanBlobs);
-		//}
+		if (!(unidentifiedBlobs.empty()))
+		{
+			_vProcessing.humanDetection(&unidentifiedBlobs, &frame, &humanBlobs);
+		}
 
-		//if (!(humanBlobs.empty()))
-		//{
-		//	_vProcessing.checkInProfiles(&humanBlobs, &possibleProfileList, &missingHumanBlobs, &trackingHumanBlobs);
-		//}
+		if (!(humanBlobs.empty()))
+		{
+			_vProcessing.checkInProfiles(&humanBlobs, &possibleProfileList, &missingHumanBlobs, &trackingHumanBlobs);
+		}
 
-		//if (!(humanBlobs.empty()))
-		//{
-		//	_vProcessing.initTrackingObject(&humanBlobs, &trackingHumanBlobs);
-		//}
+		if (!(humanBlobs.empty()))
+		{
+			_vProcessing.initTrackingObject(&humanBlobs, &trackingHumanBlobs);
+		}
 
-		//if (!(trackingHumanBlobs.empty()))
-		//{
-		//	_vProcessing.kalmanCorrectAndPredict(&trackingHumanBlobs);
-		//	//_vProcessing.informAdjecentNodes(&exitPoints, &trackingHumanBlobs);
-		//	//_vProcessing.UpdateCentralProfiles(&trackingHumanBlobs);
-		//}
+		if (!(trackingHumanBlobs.empty()))
+		{
+			_vProcessing.kalmanCorrectAndPredict(&trackingHumanBlobs);
+			//_vProcessing.informAdjecentNodes(&exitPoints, &trackingHumanBlobs);
+			//_vProcessing.UpdateCentralProfiles(&trackingHumanBlobs);
+		}
 
 
 
@@ -145,8 +145,6 @@ void ThreadForNode::run()
 		//{
 		//	rectangle(frame, boundRect[i].tl(), boundRect[i].br(), Scalar(255, 255, 0), 2, 8, 0);// scalar is for Bounding Box
 		//}
-
-		//  end process here  //
 
 		
 		waitForAcknowledge();
