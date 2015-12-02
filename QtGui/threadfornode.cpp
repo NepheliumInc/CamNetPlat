@@ -19,9 +19,9 @@ ThreadForNode::~ThreadForNode()
 void ThreadForNode::run()
 {
 	VideoCapture cap(videoLink);
-
+	
 	//vector<graph::ExitPoint> exitPoints = currentNodePtr->exitPoints;
-	vector<Blob> blobs, unidentifiedBlobs;
+	vector<models::Blob> blobs, unidentifiedBlobs;
 	vector<HumanBlob> humanBlobs, trackingHumanBlobs, possibleProfileList;
 	vector<MissingHumanBlob> missingHumanBlobs;
 
@@ -154,7 +154,7 @@ void ThreadForNode::run()
 		Point rectStart;
 		Point rectEnd;
 
-		for (vector<Blob>::iterator i = blobs.begin(); i != blobs.end(); i++)
+		for (vector<models::Blob>::iterator i = blobs.begin(); i != blobs.end(); i++)
 		{
 			resizeContour(i->getContour(), sx, sy, &cnt);
 			Rect br = boundingRect(cnt);

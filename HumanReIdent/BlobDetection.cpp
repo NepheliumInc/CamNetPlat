@@ -35,8 +35,6 @@ BlobDetection::~BlobDetection()
 vector< vector< Point> > BlobDetection::detectContours(Mat frame, Ptr< BackgroundSubtractor>& pMOG2Pointer , Mat& fgMaskMOG2)
 {
 	vector< vector< Point> > result;
-	//imshow("Inside Library Frame",frame);
-	cvWaitKey(1);
 
 	Mat fgMaskMOG2X = fgMaskMOG2.clone(); 
 
@@ -51,15 +49,9 @@ vector< vector< Point> > BlobDetection::detectContours(Mat frame, Ptr< Backgroun
 	//Background subtraction
 	pMOG2->operator()(frame, fgMaskMOG2X, -1);
 	morphologyEx(fgMaskMOG2X, frame, CV_MOP_CLOSE, element);
-	//imshow("ShadowNotRemoved", frame);
-	////imshow("Testing 0", frame);
 	//threshold(frame, frame, 100, 180, CV_THRESH_BINARY);
 
-	//imshow("ShadowRemoved", frame);
-	//Find contour
 	ContourImg = frame.clone();
-	////imshow("Testing 1", frame);
-	cvWaitKey(1);
 	findContours(ContourImg,
 		result, // a vector of contours
 		CV_RETR_EXTERNAL, // retrieve the external contours
@@ -182,10 +174,94 @@ bool BlobDetection::isQualifyingContour(vector<Point> contour)
 		result = true;
 	}
 
+	//second test
+	// pointPolygonTest(InputArray contour, Point2f pt, bool measureDist)
+
+
 	return result;
 	
 
 }
+bool BlobDetection::isQualifyingContour(vector<Point> contour, vector<vector<Point>>cutOffRegions)
+{
+	bool result = false;
+	int minimum_width = 30;//30;
+	int maximum_width = 180;//100;
+	int minimum_height = 30;// 30;
+	double minimum_htow_ratio = 1.3;
+	Rect roi = boundingRect(contour);
+	double heightToWidthRatio = static_cast<double>(roi.height) / static_cast<double>(roi.width);
+	if (roi.width			>	minimum_width	&&
+		roi.width			<	maximum_width	&&
+		roi.height			>	minimum_height	&&
+		heightToWidthRatio	>	minimum_htow_ratio
+		)
+	{
+		result = true;
+	}
+
+	//second test
+	// pointPolygonTest(InputArray contour, Point2f pt, bool measureDist)
+	//Performs a point - in - contour test.
+	//contour – Input contour.
+	//pt – Point tested against the contour.
+	//measureDist – If true, the function estimates the signed distance from the point to the nearest contour edge.Otherwise, the function only checks if the point is inside a contour or not.
+	//The function determines whether the point is inside a contour, outside, or lies on an edge(or coincides with a vertex).It returns positive(inside), negative(outside), or zero(on an edge) value, correspondingly.When measureDist = false, the return value is + 1, -1, and 0, respectively.Otherwise, the return value is a signed distance between the point and the nearest contour edge.
+	//See below a sample output of the function where each image pixel is tested against the contour.
+
+
+	return result;
+
+
+}
+
+
+vector<BlobId> BlobDetection::matchProfilesWithBlobs(vector< vector< Point> > contours, string absoluteTime, string cameraNode){
+	HumanHits hh;
+	vector<BlobId> profiledBlobs;
+	vector<Profile> profilesExisting = hh.getAllProfilesInSecond(absoluteTime, cameraNode);
+
+	//Start comparing blob with existing profile
+	int counter = 0;
+	for (vector< Point> contour : contours)
+	{
+		//Find centre of blob
+		Moments mom = moments(contour, false);
+		Point2f currentCentrePoint = Point2f(mom.m10 / mom.m00, mom.m01 / mom.m00);
+
+		//Map blob to profile, if not found set to UNKNOWN
+		double minDistance = -1;
+		string minProfile = "UNKNOWN";
+		for (int profileCount = 0; profileCount < profilesExisting.size(); profileCount++)
+		{
+			Profile savedProfile = profilesExisting[profileCount];
+			double distance = sqrt(
+				(currentCentrePoint.x - savedProfile.centreX)*(currentCentrePoint.x - savedProfile.centreX)
+				+
+				(currentCentrePoint.y - savedProfile.centreY)*(currentCentrePoint.y - savedProfile.centreY)
+				);
+			if (minDistance = -1 || minDistance > distance)
+			{
+				minDistance = distance;
+				minProfile = savedProfile.profileId;
+				profilesExisting.erase(profilesExisting.begin() + profileCount);
+			}
+
+		}
+		BlobId blobId;
+		blobId.Id = minProfile;
+		blobId.surroundingContours = contour;
+		blobId.centreX = currentCentrePoint.x;
+		blobId.centreY = currentCentrePoint.y;
+		profiledBlobs.push_back(blobId);
+		counter++;
+	}
+
+
+
+	return profiledBlobs;
+}
+
 
 vector< vector< Point> > BlobDetection::detectEnclosingConvexHull(vector<vector<Point>> contours)
 {

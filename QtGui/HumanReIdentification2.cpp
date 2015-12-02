@@ -69,7 +69,7 @@ vector<BlobId> matchProfilesWithBlobs(vector< vector< Point> > contours, string 
 
 		//Map blob to profile, if not found set to UNKNOWN
 		double minDistance = -1;
-		string minProfile = "UNKNOWN";
+		string minProfile = ">U<";
 		for (int profileCount = 0; profileCount < profilesExisting.size(); profileCount++)
 		{
 			Profile savedProfile = profilesExisting[profileCount];

@@ -14,18 +14,31 @@
 
 #include <QtCore\qstring.h>
 #include <QtCore\qdebug.h>
-
+#include "humanhits.h"
 
 using namespace cv;
 using namespace std;
+
+struct BlobId{
+	vector< Point> surroundingContours;
+	string Id;
+	int centreX;
+	int centreY;
+
+
+};
 class HUMANREIDENT_EXPORT BlobDetection
 {
 public:
 
 	vector<vector<Point>> detectContours(Mat frame, Ptr< BackgroundSubtractor>& pMOG2, Mat& fgMaskMOG2);
 	//vector<vector<Point>> GPU_DetectContours(Mat o_frame, gpu::GpuMat o_frame_gpu, float& scaleX2, float& scaleY2);
-	bool BlobDetection::isQualifyingContour(vector<Point> contour);
-	vector<vector<Point>> detectEnclosingConvexHull(vector< vector< Point> >  contours);
+	bool isQualifyingContour(vector<Point> contour);
+	bool isQualifyingContour(vector<Point> contour, vector<vector<Point>>cutOffRegions);
+	vector<vector<Point>> detectEnclosingConvexHull(vector< vector< Point> >  contours); 
+	vector<BlobId> matchProfilesWithBlobs(vector< vector< Point> > contours, string absoluteTime, string cameraNode);
+
+
 	BlobDetection();
 	~BlobDetection();
 
