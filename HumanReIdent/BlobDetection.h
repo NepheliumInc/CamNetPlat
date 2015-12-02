@@ -17,6 +17,7 @@ class HUMANREIDENT_EXPORT BlobDetection
 public:
 
 	vector<vector<Point>> detectContours(Mat frame, Ptr< BackgroundSubtractor>& pMOG2, Mat& fgMaskMOG2);
+	vector<vector<Point>> detectContours(Mat frame, Ptr< BackgroundSubtractor>& pMOG2, Mat& fgMaskMOG2, Mat structuringElement);
 	bool BlobDetection::isQualifyingContour(vector<Point> contour);
 	vector<vector<Point>> detectEnclosingConvexHull(vector< vector< Point> >  contours);
 	BlobDetection();

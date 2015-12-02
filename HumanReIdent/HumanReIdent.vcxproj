@@ -153,6 +153,7 @@
     <ClCompile Include="humanreident.cpp" />
     <ClCompile Include="momentcalculation2.cpp" />
     <ClCompile Include="momentstructures2.cpp" />
+    <ClCompile Include="NodeParameterObject.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -191,6 +192,7 @@
       </Command>
     </CustomBuild>
     <ClInclude Include="momentcalculation2.h" />
+    <ClInclude Include="NodeParameterObject.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

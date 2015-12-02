@@ -184,12 +184,14 @@
     </ClCompile>
     <ClCompile Include="graph.cpp" />
     <ClCompile Include="HumanBlob.cpp" />
+    <ClCompile Include="HumanReIdentification.cpp" />
     <ClCompile Include="mainGUI.cpp" />
     <ClCompile Include="messagepasser.cpp" />
     <ClCompile Include="MissingHumanBlob.cpp" />
     <ClCompile Include="node.cpp" />
     <ClCompile Include="ProfileTransferObj.cpp" />
     <ClCompile Include="qttesting.cpp" />
+    <ClCompile Include="Source2.cpp" />
     <ClCompile Include="threadfornode.cpp" />
     <ClCompile Include="TrackingObject.cpp" />
     <ClCompile Include="VideoProcessing.cpp" />

@@ -142,7 +142,7 @@ vector<Profile> HumanHits::getAllProfilesInSecond(string absoluteTime, string ca
 		cameraNode = "camera_node_29";
 
 
-	string query = "select profile_id, Blob_Center_Point  from " + cameraNode +" where TimeStamp = "+ absoluteTime;
+	string query = "select profile_id, Blob_Center_Point  from " + cameraNode +" where TimeStamp = "+ absoluteTime +" AND  Blob_Center_Point NOT LIKE 'MISSING'";
 	// select profile_id, timestamp from camera_node_22 where TimeStamp = 1.54;
 	ResultSet *profileResult = stmt->executeQuery(query);
 	while (profileResult->next())
