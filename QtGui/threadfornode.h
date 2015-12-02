@@ -5,6 +5,7 @@
 #include "QtCore\qobject.h"
 #include "QtCore\qthread.h"
 #include "qimage.h"
+#include "qpainter.h"
 #include "qdebug.h"
 
 #include <opencv2\core\core.hpp>
@@ -14,6 +15,7 @@
 #include <opencv2\highgui\highgui.hpp>
 
 #include "VideoProcessing.h"
+#include "ui_qttesting.h"
 
 #include "QtCore\qmutex.h"
 #include "QtCore\qwaitcondition.h"
@@ -40,6 +42,7 @@ public:
 	bool acknowledged;
 	QWaitCondition* isNotShown;
 	QMutex* mutex;
+	QLabel* releventUiLable;
 
 signals:
 	void sendFrameToMain(QImage outImage, ThreadForNode* thread);
@@ -47,8 +50,10 @@ signals:
 	void sendFinishedToMain();
 
 private:
+	void resizeContour(vector<Point> contour, double xScalar, double yScalar, vector<Point>* cnt);
 	MessagePasser* msgPasser;
 	Mat frame;
+	Mat frameToBeRaped;
 };
 
 #endif // THREADFORNODE_H

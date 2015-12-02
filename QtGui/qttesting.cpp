@@ -39,6 +39,7 @@ QtTesting::QtTesting(QWidget *parent)
 
 	for (map<string, ThreadForNode*>::iterator it = nodeToThreadMap.begin(); it != nodeToThreadMap.end(); it++)
 	{
+		it->second->releventUiLable = lblMap[it->first];
 		it->second->start();
 	}
 
@@ -71,15 +72,11 @@ QtTesting::~QtTesting()
 
 void QtTesting::recieveFrameFromThreads(QImage outImage, ThreadForNode* thread)
 {
-	int x = outImage.byteCount();
-	outImage = outImage.scaled(340, 255, Qt::KeepAspectRatio);
 	if (completedThreadMap.count(thread->nodeId) == 0)
 	{
 		frameMap[thread->nodeId] = outImage;
 		completedThreadMap[thread->nodeId] = thread;
 	}
-	/*if (completedThreadMap.size() > threadCount)
-		__debugbreak();*/
 	if (completedThreadMap.size() == threadCount)
 	{
 		for (map<string, QImage>::const_iterator i = frameMap.begin(); i != frameMap.end(); i++)

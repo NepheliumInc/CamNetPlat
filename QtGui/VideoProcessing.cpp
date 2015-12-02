@@ -20,26 +20,26 @@ int VideoProcessing::blobDetection(Mat frame, Ptr<BackgroundSubtractor> pMOG2, M
 	return (*outBlobs).size();
 }
 
-int VideoProcessing::GPU_BlobDetection(Mat frame, Ptr<BackgroundSubtractor> pMOG2, Mat mask, vector<models::Blob> *outBlobs){
-	vector<vector<Point>> contours;
-	gpu::GpuMat o_frame_gpu;
-
-	//scale and check processing time
-	unsigned long AAtime = 0, BBtime = 0;
-	float scaleX = float(frame.size().width) / RWIDTH;
-	float scaleY = float(frame.size().height) / RHEIGHT;
-	float scaleX2 = RWIDTH2 / float(RWIDTH);
-	float scaleY2 = RHEIGHT2 / float(RHEIGHT);
-
-	contours = blbDetect.GPU_DetectContours(frame, o_frame_gpu, scaleX2, scaleY2);
-	for each (vector<Point> con in contours)
-	{
-		if (blbDetect.isQualifyingContour(con))
-			(*outBlobs).push_back(models::Blob(con));
-	}
-
-	return (*outBlobs).size();
-}
+//int VideoProcessing::GPU_BlobDetection(Mat frame, Ptr<BackgroundSubtractor> pMOG2, Mat mask, vector<models::Blob> *outBlobs){
+//	vector<vector<Point>> contours;
+//	gpu::GpuMat o_frame_gpu;
+//
+//	//scale and check processing time
+//	unsigned long AAtime = 0, BBtime = 0;
+//	float scaleX = float(frame.size().width) / RWIDTH;
+//	float scaleY = float(frame.size().height) / RHEIGHT;
+//	float scaleX2 = RWIDTH2 / float(RWIDTH);
+//	float scaleY2 = RHEIGHT2 / float(RHEIGHT);
+//
+//	contours = blbDetect.GPU_DetectContours(frame, o_frame_gpu, scaleX2, scaleY2);
+//	for each (vector<Point> con in contours)
+//	{
+//		if (blbDetect.isQualifyingContour(con))
+//			(*outBlobs).push_back(models::Blob(con));
+//	}
+//
+//	return (*outBlobs).size();
+//}
 
 
 int VideoProcessing::humanDetection(vector<models::Blob> *blobs, Mat *frame, vector<models::HumanBlob> *outHumanBlobs){

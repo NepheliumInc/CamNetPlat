@@ -69,7 +69,7 @@ vector< vector< Point> > BlobDetection::detectContours(Mat frame, Ptr< Backgroun
 	fgMaskMOG2 = fgMaskMOG2X.clone();
 	return result;
 }
-
+/*
 vector<vector<Point>> BlobDetection::GPU_DetectContours(Mat o_frame, gpu::GpuMat o_frame_gpu, float& scaleX2, float& scaleY2)
 {
 
@@ -163,7 +163,7 @@ vector<vector<Point>> BlobDetection::GPU_DetectContours(Mat o_frame, gpu::GpuMat
 
 
 }
-
+*/
 bool BlobDetection::isQualifyingContour(vector<Point> contour)
 { 
 	bool result = false;
