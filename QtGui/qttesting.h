@@ -22,6 +22,7 @@ public:
 	public slots:
 	void recieveFrameFromThreads(QImage outImage, ThreadForNode* thread);
 	void finishedThreads();
+	void wakeForFrameCount();
 
 private:
 	Ui::QtTestingClass ui;
@@ -31,7 +32,9 @@ private:
 	map<string, ThreadForNode*> completedThreadMap;
 	map<string, QImage> frameMap;
 	map<string, QLabel*> lblMap;
-	int threadCount;
+	int threadCount = 0;
+	int globalFrameCount = 1;
+	vector<string> toBeStart;
 };
 
 #endif // QTTESTING_H

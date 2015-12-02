@@ -42,6 +42,7 @@ public:
 	bool acknowledged;
 	QWaitCondition* isNotShown;
 	QMutex* mutex;
+	int startFrame;
 	QLabel* releventUiLable;
 
 signals:

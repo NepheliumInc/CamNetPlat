@@ -133,12 +133,13 @@ namespace graph{
 	{
 	public:
 		Node();
-		Node(string _nodeId, string _videoLink, vector<ExitPoint> _exitPoints);
+		Node(string _nodeId, string _videoLink, vector<ExitPoint> _exitPoints, int _startFrame);
 		~Node();
 
 		string videoLink;
 		string nodeId;
 		vector<ExitPoint> exitPoints;
+		int startFrame;
 	};
 
 }
