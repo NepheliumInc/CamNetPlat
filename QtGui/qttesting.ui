@@ -235,6 +235,22 @@
      <string>Nephelium Inc. - A GPU based implementation for human reidentification in Camera Networks</string>
     </property>
    </widget>
+   <widget class="QLabel" name="lblGlobalFrameCounter">
+    <property name="geometry">
+     <rect>
+      <x>1150</x>
+      <y>10</y>
+      <width>201</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

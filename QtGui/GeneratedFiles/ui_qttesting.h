@@ -36,6 +36,7 @@ public:
     QLabel *lblCamera7;
     QLabel *lblCamera8;
     QLabel *label;
+    QLabel *lblGlobalFrameCounter;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -115,6 +116,10 @@ public:
         font.setBold(false);
         font.setWeight(50);
         label->setFont(font);
+        lblGlobalFrameCounter = new QLabel(centralWidget);
+        lblGlobalFrameCounter->setObjectName(QStringLiteral("lblGlobalFrameCounter"));
+        lblGlobalFrameCounter->setGeometry(QRect(1150, 10, 201, 21));
+        lblGlobalFrameCounter->setAutoFillBackground(true);
         QtTestingClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(QtTestingClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -144,6 +149,7 @@ public:
         lblCamera7->setText(QString());
         lblCamera8->setText(QString());
         label->setText(QApplication::translate("QtTestingClass", "Nephelium Inc. - A GPU based implementation for human reidentification in Camera Networks", 0));
+        lblGlobalFrameCounter->setText(QString());
     } // retranslateUi
 
 };

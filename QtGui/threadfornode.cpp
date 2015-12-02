@@ -30,14 +30,20 @@ void ThreadForNode::run()
 	VideoProcessing _vProcessing = VideoProcessing();
 	Mat fgMaskMOG2;
 	Ptr<BackgroundSubtractor> pMOG2 = new BackgroundSubtractorMOG2(300, 32, true);
+	bool ended = false;
 
 	if (!cap.isOpened())
 	{
 		qDebug() << "Error loding video '" << QString::fromStdString(videoLink) << "'";
 	}
-	cap.set(CV_CAP_PROP_POS_FRAMES, 9000);
+	//cap.set(CV_CAP_PROP_POS_FRAMES, 10507);
 	while (cap.read(frame))
 	{
+		if (ended)
+			break;
+
+		if (cap.get(CV_CAP_PROP_POS_FRAMES) == cap.get(CV_CAP_PROP_FRAME_COUNT))
+			ended = true;
 
 		frameToBeRaped = frame.clone();
 		// ////////////////// //
@@ -48,12 +54,21 @@ void ThreadForNode::run()
 		unidentifiedBlobs.clear();
 		humanBlobs.clear();
 
+		string x = this->nodeId;
+
 		//// blob detection
 		if (_vProcessing.blobDetection(frameToBeRaped, pMOG2, fgMaskMOG2, &blobs) == 0)
 		{
-			waitForAcknowledge();
 			QImage outImage((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
 			outImage = outImage.scaled(this->releventUiLable->width(), this->releventUiLable->height(), Qt::KeepAspectRatio);
+			QPainter qpainter(&outImage);
+			qpainter.setBrush(Qt::NoBrush);
+			qpainter.setPen(Qt::red);
+			qpainter.setFont(QFont("Times", 12, QFont::Normal));
+			qpainter.drawText(outImage.rect(), Qt::AlignTop, QString::fromStdString(to_string(cap.get(CV_CAP_PROP_POS_FRAMES))));
+
+			waitForAcknowledge();
+
 			emit sendFrameToMain(outImage, this);
 			this->acknowledged = false;
 			continue;	// If no blobs detected continue while
@@ -147,6 +162,9 @@ void ThreadForNode::run()
 		QPainter qpainter(&outImage);
 		qpainter.setBrush(Qt::NoBrush);
 		qpainter.setPen(Qt::red);
+		qpainter.setFont(QFont("Times", 12, QFont::Normal));
+
+		qpainter.drawText(outImage.rect(), Qt::AlignTop, QString::fromStdString(to_string(cap.get(CV_CAP_PROP_POS_FRAMES))));
 
 		double sx = (double)outImage.width() / (double)frame.size().width;
 		double sy = (double)outImage.height() / (double)frame.size().height;
@@ -166,17 +184,21 @@ void ThreadForNode::run()
 		
 
 		waitForAcknowledge();
-		if (cap.get(CV_CAP_PROP_POS_FRAMES) == cap.get(CV_CAP_PROP_FRAME_COUNT))
-		{
-			emit sendFrameToMain(outImage, this);
-			emit sendFinishedToMain();
-			break;
-		}
-		imshow(this->nodeId, frame);
 		emit sendFrameToMain(outImage, this);
 		this->acknowledged = false;
 	}
 
+	QImage finalImage(this->releventUiLable->width(), this->releventUiLable->width(), QImage::Format_RGB888);
+	QPainter qp(&finalImage);
+	qp.setBrush(Qt::black);
+	qp.setPen(Qt::red);
+	qp.setFont(QFont("Times", 12, QFont::Bold));
+	qp.drawText(finalImage.rect(), Qt::AlignCenter, "END OF FILE!");
+
+	waitForAcknowledge();
+	emit sendFrameToMain(finalImage, this);
+	emit sendFinishedToMain();
+	
 	qDebug() << "finished.";
 }
 
