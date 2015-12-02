@@ -189,7 +189,7 @@ void segmentImage(Mat src)
 
 }
 
-int mainHR()
+int main()
 {
 
 	
@@ -232,6 +232,7 @@ int mainHR()
 			int totalTime =0;
 			QTime ti;
 			ti.start();
+
 			clock_t t = clock();
 			if (!(stream1.read(frame)))
 				break;
