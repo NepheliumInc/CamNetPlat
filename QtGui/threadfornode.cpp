@@ -56,7 +56,7 @@ void ThreadForNode::run()
 
 		string x = this->nodeId;
 
-		//// blob detection
+		// blob detection
 		if (_vProcessing.blobDetection(frameToBeRaped, pMOG2, fgMaskMOG2, &blobs) == 0)
 		{
 			QImage outImage((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
@@ -73,30 +73,33 @@ void ThreadForNode::run()
 			this->acknowledged = false;
 			continue;	// If no blobs detected continue while
 		}
-		//if (trackingHumanBlobs.empty())	// if no human blobs tracked yet
+
+		mockFunction(&blobs, &trackingHumanBlobs, &cap);
+
+		//if (trackingHumanBlobs.empty()) // blobs >>> unindentified
 		//{
-		//	unidentifiedBlobs = blobs;	// all blobs are unindentified
+		//	unidentifiedBlobs = blobs;
 		//}
-		//else	// if there are human blobs tracked in previous frames
+		//else
 		//{
 		//	_vProcessing.dataAssociation(&blobs, &trackingHumanBlobs, &unidentifiedBlobs, &missingHumanBlobs);
 		//}
-
-		//if (!(unidentifiedBlobs.empty()))
+		//
+		//if (!(unidentifiedBlobs.empty())) // unindentified >>> human
 		//{
 		//	_vProcessing.humanDetection(&unidentifiedBlobs, &frameToBeRaped, &humanBlobs);
 		//}
-
-		//if (!(humanBlobs.empty()))
+		//
+		//if (!(humanBlobs.empty())) // human >>> trackinghuman
 		//{
 		//	_vProcessing.checkInProfiles(&humanBlobs, &possibleProfileList, &missingHumanBlobs, &trackingHumanBlobs);
 		//}
-
+		//
 		//if (!(humanBlobs.empty()))
 		//{
 		//	_vProcessing.initTrackingObject(&humanBlobs, &trackingHumanBlobs);
 		//}
-
+		//
 		//if (!(trackingHumanBlobs.empty()))
 		//{
 		//	_vProcessing.kalmanCorrectAndPredict(&trackingHumanBlobs);
@@ -172,6 +175,8 @@ void ThreadForNode::run()
 		Point rectStart;
 		Point rectEnd;
 
+
+		// change blob into TrackingHumanBlob when code is done //
 		for (vector<models::Blob>::iterator i = blobs.begin(); i != blobs.end(); i++)
 		{
 			resizeContour(i->getContour(), sx, sy, &cnt);
@@ -230,4 +235,33 @@ void ThreadForNode::resizeContour(vector<Point> contour, double xScalar, double 
 		pnt.y = contour[i].y * yScalar;
 		cnt->push_back(pnt);
 	}
+}
+
+void ThreadForNode::mockFunction(vector<models::Blob> *blobs, vector<models::HumanBlob> *trackingHumanBlobs, VideoCapture *cap)
+{
+	vector<vector<Point>> blobContourVector;
+	for (vector<models::Blob>::iterator it = blobs->begin(); it != blobs->end(); it++)
+	{
+		blobContourVector.push_back(it->getContour());
+	}
+	BlobDetection blbDetection;
+	int time = static_cast<int>(cap->get(CV_CAP_PROP_POS_MSEC));
+	int mins = static_cast<int>(time / (1000 * 60));
+	int seconds = static_cast<int>((time - (mins * 60 * 1000)) / 1000);
+	string timeStr;
+	if (seconds < 10)
+	{
+		timeStr = to_string(mins) + ".0" + to_string(seconds);
+	}
+	else
+	{
+		timeStr = to_string(mins) + "." + to_string(seconds);
+	}
+	stringstream ss(this->videoLink);
+	string item;
+	vector<string> tokens;
+	while (getline(ss, item, '/')) {
+		tokens.push_back(item);
+	}
+	vector<BlobId> profiledBlobs = blbDetection.matchProfilesWithBlobs(blobContourVector, timeStr, tokens[tokens.size()-1]);
 }

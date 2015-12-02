@@ -80,6 +80,8 @@ void VideoProcessing::checkInProfiles(
 	// update the tracking list and possible list and missing list
 	// send unidentified human list
 
+	// by using feature vectors
+
 	for (size_t i = 0; i < humanList->size(); i++)
 	{
 		trackingList->push_back(humanList->at(i));
@@ -88,23 +90,7 @@ void VideoProcessing::checkInProfiles(
 
 void VideoProcessing::initTrackingObject(vector<models::HumanBlob> *humanList, vector<models::HumanBlob> *trackingList)
 {
-	bool temp = false;
-	for (size_t i = 0; i < humanList->size(); i++)
-	{
-		for (size_t j = 0; j < trackingList->size(); j++)
-		{
-			if (humanList->at(i) == trackingList->at(j))
-			{
-				temp = true;
-				continue;
-			}
-		}
-		if (!temp)
-		{
-			trackingList->push_back(humanList->at(i));
-		}
-		temp = false;
-	}
+	
 }
 
 void VideoProcessing::kalmanCorrectAndPredict(vector<models::HumanBlob> *trackingList)
