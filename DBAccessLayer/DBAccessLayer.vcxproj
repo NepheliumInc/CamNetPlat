@@ -140,12 +140,14 @@
     <ClCompile Include="caviar_hits.cpp" />
     <ClCompile Include="dbaccesslayer.cpp" />
     <ClCompile Include="humanhits.cpp" />
+    <ClCompile Include="systemdata.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="caviar_hits.h" />
     <ClInclude Include="dbaccesslayer.h" />
     <ClInclude Include="dbaccesslayer_global.h" />
     <ClInclude Include="humanhits.h" />
+    <ClInclude Include="systemdata.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HumanReIdent\HumanReIdent.vcxproj">
