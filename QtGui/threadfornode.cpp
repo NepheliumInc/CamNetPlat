@@ -25,6 +25,8 @@ void ThreadForNode::run()
 	vector<HumanBlob> humanBlobs, trackingHumanBlobs, possibleProfileList;
 	vector<MissingHumanBlob> missingHumanBlobs;
 
+	//gpu::GpuMat Mog_Mask_g, Mog_MaskMorpho_g;
+
 	VideoProcessing _vProcessing = VideoProcessing();
 	Mat fgMaskMOG2;
 	Ptr<BackgroundSubtractor> pMOG2 = new BackgroundSubtractorMOG2(300, 32, true);
@@ -36,23 +38,26 @@ void ThreadForNode::run()
 	cap.set(CV_CAP_PROP_POS_FRAMES, 9000);
 	while (cap.read(frame))
 	{
+
+		frameToBeRaped = frame.clone();
 		// ////////////////// //
 		// process begin here //
 		// ////////////////// //
 
-		//blobs.clear();
-		//unidentifiedBlobs.clear();
-		//humanBlobs.clear();
+		blobs.clear();
+		unidentifiedBlobs.clear();
+		humanBlobs.clear();
 
 		//// blob detection
-		//if (_vProcessing.blobDetection(frame, pMOG2, fgMaskMOG2, &blobs) == 0)
-		//{
-		//	waitForAcknowledge();
-		//	QImage outImage((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
-		//	emit sendFrameToMain(outImage, this);
-		//	this->acknowledged = false;
-		//	continue;	// If no blobs detected continue while
-		//}
+		if (_vProcessing.blobDetection(frameToBeRaped, pMOG2, fgMaskMOG2, &blobs) == 0)
+		{
+			waitForAcknowledge();
+			QImage outImage((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
+			outImage = outImage.scaled(this->releventUiLable->width(), this->releventUiLable->height(), Qt::KeepAspectRatio);
+			emit sendFrameToMain(outImage, this);
+			this->acknowledged = false;
+			continue;	// If no blobs detected continue while
+		}
 		//if (trackingHumanBlobs.empty())	// if no human blobs tracked yet
 		//{
 		//	unidentifiedBlobs = blobs;	// all blobs are unindentified
@@ -64,7 +69,7 @@ void ThreadForNode::run()
 
 		//if (!(unidentifiedBlobs.empty()))
 		//{
-		//	_vProcessing.humanDetection(&unidentifiedBlobs, &frame, &humanBlobs);
+		//	_vProcessing.humanDetection(&unidentifiedBlobs, &frameToBeRaped, &humanBlobs);
 		//}
 
 		//if (!(humanBlobs.empty()))
@@ -133,33 +138,41 @@ void ThreadForNode::run()
 		//	}
 		//}
 
-		//vector<vector<Point> > blobs_poly(human_blobs.size());
-		//vector<Rect> boundRect(human_blobs.size());
-		//for (size_t i = 0; i < human_blobs.size(); i++)
-		//{
-		//	approxPolyDP(Mat(human_blobs[i]), blobs_poly[i], 3, true);
-		//	boundRect[i] = boundingRect(Mat(blobs_poly[i]));
-		//}
-
-		//for (size_t i = 0; i < human_blobs.size(); i++)
-		//{
-		//	rectangle(frame, boundRect[i].tl(), boundRect[i].br(), Scalar(255, 255, 0), 2, 8, 0);// scalar is for Bounding Box
-		//}
-
-		//  end process here  //
 
 		
+		
+		
+		QImage outImage((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
+		outImage = outImage.scaled(this->releventUiLable->width(), this->releventUiLable->height(), Qt::KeepAspectRatio);
+		QPainter qpainter(&outImage);
+		qpainter.setBrush(Qt::NoBrush);
+		qpainter.setPen(Qt::red);
+
+		double sx = (double)outImage.width() / (double)frame.size().width;
+		double sy = (double)outImage.height() / (double)frame.size().height;
+		vector<Point> cnt;
+		Point rectStart;
+		Point rectEnd;
+
+		for (vector<Blob>::iterator i = blobs.begin(); i != blobs.end(); i++)
+		{
+			resizeContour(i->getContour(), sx, sy, &cnt);
+			Rect br = boundingRect(cnt);
+			rectStart = Point(br.x, br.y);
+			rectEnd = Point(br.width, br.height);
+			qpainter.drawRect(rectStart.x, rectStart.y, rectEnd.x, rectEnd.y);
+		}
+
+		
+
 		waitForAcknowledge();
 		if (cap.get(CV_CAP_PROP_POS_FRAMES) == cap.get(CV_CAP_PROP_FRAME_COUNT))
 		{
-			frame = Mat::zeros(1, 1, CV_64F);
-			putText(frame, "END OF FILE!", Point(frame.rows / 2, frame.cols / 2), FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 255, 255), 2);
-			QImage outImage((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
 			emit sendFrameToMain(outImage, this);
 			emit sendFinishedToMain();
 			break;
 		}
-		QImage outImage((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
+		imshow(this->nodeId, frame);
 		emit sendFrameToMain(outImage, this);
 		this->acknowledged = false;
 	}
@@ -183,4 +196,16 @@ void ThreadForNode::waitForAcknowledge()
 	}
 	//while (!acknowledged);
 
+}
+
+void ThreadForNode::resizeContour(vector<Point> contour, double xScalar, double yScalar, vector<Point>* cnt)
+{
+	cnt->clear();
+	for (int i = 0; i < contour.size(); i++)
+	{
+		Point pnt;
+		pnt.x = contour[i].x * xScalar;
+		pnt.y = contour[i].y * yScalar;
+		cnt->push_back(pnt);
+	}
 }

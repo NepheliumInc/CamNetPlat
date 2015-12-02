@@ -24,13 +24,13 @@ int Graph::initGraph()
 	vector<graph::ExitPoint> exitPointsList{ { 8, make_pair(20, 20), make_pair(50, 100) } };
 
 	addNode(Node("C001", "C:/AdaptiveCameraNetworkPack/Videos/PRG1.avi", exitPointsList));
-	addNode(Node("C002", "C:/AdaptiveCameraNetworkPack/Videos/PRG6.avi", exitPointsList));
-	addNode(Node("C003", "C:/AdaptiveCameraNetworkPack/Videos/PRG7.avi", exitPointsList));
-	addNode(Node("C004", "C:/AdaptiveCameraNetworkPack/Videos/PRG14.avi", exitPointsList));
-	addNode(Node("C005", "C:/AdaptiveCameraNetworkPack/Videos/PRG22.avi", exitPointsList));
-	addNode(Node("C006", "C:/AdaptiveCameraNetworkPack/Videos/PRG23.avi", exitPointsList));
-	addNode(Node("C007", "C:/AdaptiveCameraNetworkPack/Videos/PRG28.avi", exitPointsList));
-	addNode(Node("C008", "C:/AdaptiveCameraNetworkPack/Videos/PRG29.avi", exitPointsList));
+	//addNode(Node("C002", "C:/AdaptiveCameraNetworkPack/Videos/PRG6.avi", exitPointsList));
+	//addNode(Node("C003", "C:/AdaptiveCameraNetworkPack/Videos/PRG7.avi", exitPointsList));
+	//addNode(Node("C004", "C:/AdaptiveCameraNetworkPack/Videos/PRG14.avi", exitPointsList));
+	//addNode(Node("C005", "C:/AdaptiveCameraNetworkPack/Videos/PRG22.avi", exitPointsList));
+	//addNode(Node("C006", "C:/AdaptiveCameraNetworkPack/Videos/PRG23.avi", exitPointsList));
+	//addNode(Node("C007", "C:/AdaptiveCameraNetworkPack/Videos/PRG28.avi", exitPointsList));
+	//addNode(Node("C008", "C:/AdaptiveCameraNetworkPack/Videos/PRG29.avi", exitPointsList));
 
 	addNeighbour("C001", "C002", 8, 1);
 	addNeighbour("C002", "C001", 2, 1);

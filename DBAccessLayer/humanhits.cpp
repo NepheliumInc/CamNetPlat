@@ -94,6 +94,7 @@ HumanHits::HumanHits(MySQL_Driver *driver, Connection *con)
 	con = con;
 
 }
+
 HumanHits::~HumanHits()
 {
 
