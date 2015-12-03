@@ -69,7 +69,7 @@ namespace models
 		Blob blob;
 		vector<Point> centerPointList;
 		KalmanFilter kalmanFilter;
-		int profileID;
+		string profileID;
 	};
 	//#endif
 
@@ -83,7 +83,7 @@ namespace models
 		~MissingHumanBlob();
 
 		HumanBlob humanBlob;
-		time_t missedTime;
+		int missedTime;
 	};
 	//#endif
 

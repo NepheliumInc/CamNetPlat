@@ -17,6 +17,7 @@ QtTesting::QtTesting(QWidget *parent)
 		thread->nodeId = it->nodeId;
 		thread->videoLink = it->videoLink;
 		thread->exitPoints = it->exitPoints;
+		thread->startFrame = it->startFrame;
 		thread->isNotShown = &isNotShown;
 		thread->mutex = &mutex;
 		nodeToThreadMap[it->nodeId] = thread;
@@ -35,32 +36,19 @@ QtTesting::QtTesting(QWidget *parent)
 		this->lblMap[nodes[i].nodeId] = uiLblVector[i];
 	}
 
-	this->threadCount = nodes.size();
-
 	for (map<string, ThreadForNode*>::iterator it = nodeToThreadMap.begin(); it != nodeToThreadMap.end(); it++)
 	{
-		it->second->start();
+		if (it->second->startFrame == 0)
+		{
+			it->second->releventUiLable = lblMap[it->first];
+			this->threadCount += 1;
+			it->second->start();
+		}
+		else
+		{
+			toBeStart.push_back(it->first);
+		}
 	}
-
-
-
-	/*ThreadForNode* thread1 = new ThreadForNode();
-	ThreadForNode* thread2 = new ThreadForNode();
-
-	connect(thread1, SIGNAL(sendFrameToMain(QImage, ThreadForNode*)), this, SLOT(recieveFrameFromThreads(QImage, ThreadForNode*)));
-	connect(thread2, SIGNAL(sendFrameToMain(QImage, ThreadForNode*)), this, SLOT(recieveFrameFromThreads(QImage, ThreadForNode*)));
-
-	thread1->nodeId = "C001";
-	thread2->nodeId = "C002";
-
-	this->lblMap["C001"] = ui.lblCamera1;
-	this->lblMap["C002"] = ui.lblCamera2;
-
-	thread1->videoLink = "C:/AdaptiveCameraNetworkPack/Videos/PRG6.avi";
-	thread2->videoLink = "C:/AdaptiveCameraNetworkPack/Videos/PRG29.avi";
-
-	thread1->start();
-	thread2->start();*/
 }
 
 QtTesting::~QtTesting()
@@ -71,14 +59,11 @@ QtTesting::~QtTesting()
 
 void QtTesting::recieveFrameFromThreads(QImage outImage, ThreadForNode* thread)
 {
-	int x = outImage.byteCount();
 	if (completedThreadMap.count(thread->nodeId) == 0)
 	{
 		frameMap[thread->nodeId] = outImage;
 		completedThreadMap[thread->nodeId] = thread;
 	}
-	/*if (completedThreadMap.size() > threadCount)
-		__debugbreak();*/
 	if (completedThreadMap.size() == threadCount)
 	{
 		for (map<string, QImage>::const_iterator i = frameMap.begin(); i != frameMap.end(); i++)
@@ -93,6 +78,12 @@ void QtTesting::recieveFrameFromThreads(QImage outImage, ThreadForNode* thread)
 		mutex.lock();
 			isNotShown.wakeAll();
 		mutex.unlock();
+		
+		ui.lblGlobalFrameCounter->setText(QString::number(globalFrameCount));
+
+		globalFrameCount += 1;
+
+		wakeForFrameCount();
 
 		completedThreadMap.clear();
 		frameMap.clear();
@@ -102,4 +93,24 @@ void QtTesting::recieveFrameFromThreads(QImage outImage, ThreadForNode* thread)
 void QtTesting::finishedThreads()
 {
 	threadCount -= 1;
+}
+
+void QtTesting::wakeForFrameCount()
+{
+	vector<string> temp;
+	for (int i = 0; i < toBeStart.size(); i++)
+	{
+		if (nodeToThreadMap[toBeStart[i]]->startFrame == globalFrameCount)
+		{
+			nodeToThreadMap[toBeStart[i]]->releventUiLable = lblMap[toBeStart[i]];
+			nodeToThreadMap[toBeStart[i]]->start();
+			this->threadCount += 1;
+		}
+		else
+		{
+			temp.push_back(toBeStart[i]);
+		}
+	}
+
+	toBeStart = temp;
 }

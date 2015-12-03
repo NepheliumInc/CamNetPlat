@@ -8,7 +8,7 @@ MissingHumanBlob::MissingHumanBlob(){};
 MissingHumanBlob::MissingHumanBlob(models::HumanBlob superHumanBlob)
 {
 	humanBlob = superHumanBlob;
-	time(&missedTime);
+	missedTime = 1;
 }
 
 MissingHumanBlob::~MissingHumanBlob(){}

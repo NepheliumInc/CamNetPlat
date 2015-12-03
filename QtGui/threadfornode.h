@@ -4,8 +4,9 @@
 //#include <QObject>
 #include "QtCore\qobject.h"
 #include "QtCore\qthread.h"
-#include "qimage.h"
-#include "qdebug.h"
+#include "QtGui\qimage.h"
+#include "QtGui\qpainter.h"
+#include "QtCore\qdebug.h"
 
 #include <opencv2\core\core.hpp>
 #include <opencv2\imgproc\imgproc.hpp>
@@ -14,6 +15,7 @@
 #include <opencv2\highgui\highgui.hpp>
 
 #include "VideoProcessing.h"
+#include "ui_qttesting.h"
 
 #include "QtCore\qmutex.h"
 #include "QtCore\qwaitcondition.h"
@@ -33,6 +35,7 @@ public:
 	void run();
 	void updateProfileList(ProfileTransferObj profile);
 	void waitForAcknowledge();
+	void mockFunction(vector<models::Blob> *blobs, vector<models::HumanBlob> *trackingHumanBlobs, VideoCapture *cap);
 
 	string videoLink; // temp
 	string nodeId;
@@ -40,6 +43,8 @@ public:
 	bool acknowledged;
 	QWaitCondition* isNotShown;
 	QMutex* mutex;
+	int startFrame;
+	QLabel* releventUiLable;
 
 signals:
 	void sendFrameToMain(QImage outImage, ThreadForNode* thread);
@@ -47,8 +52,10 @@ signals:
 	void sendFinishedToMain();
 
 private:
+	void resizeContour(vector<Point> contour, double xScalar, double yScalar, vector<Point>* cnt);
 	MessagePasser* msgPasser;
 	Mat frame;
+	Mat frameToBeRaped;
 };
 
 #endif // THREADFORNODE_H

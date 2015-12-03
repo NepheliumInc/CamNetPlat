@@ -7,7 +7,7 @@
 #include "QtCore\qdebug.h"
 #include "QtCore\qobject.h"
 #include "QtCore\qthread.h"
-#include "qimage.h"
+#include "QtGui\qimage.h"
 
 using namespace std;
 
@@ -133,12 +133,13 @@ namespace graph{
 	{
 	public:
 		Node();
-		Node(string _nodeId, string _videoLink, vector<ExitPoint> _exitPoints);
+		Node(string _nodeId, string _videoLink, vector<ExitPoint> _exitPoints, int _startFrame);
 		~Node();
 
 		string videoLink;
 		string nodeId;
 		vector<ExitPoint> exitPoints;
+		int startFrame;
 	};
 
 }

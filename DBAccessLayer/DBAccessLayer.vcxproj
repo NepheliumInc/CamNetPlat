@@ -90,7 +90,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PreprocessorDefinitions>UNICODE;WIN32;WIN64;QT_DLL;QT_CORE_LIB;DBACCESSLAYER_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\AdaptiveCameraNetworkPack\CamNetPlat\HumanReIdent;C:\AdaptiveCameraNetworkPack\boost_1_57_0\boost_1_57_0;C:\AdaptiveCameraNetworkPack\MYSQLC++BUILDS\mysqlconn;C:\AdaptiveCameraNetworkPack\MYSQLC++BUILDS\Mysql\libmysql\X64\Release;C:\AdaptiveCameraNetworkPack\mysql-connector-c++-1.1.1;C:\AdaptiveCameraNetworkPack\mysql-connector-c++-1.1.1\driver;C:\AdaptiveCameraNetworkPack\mysql-server-5.7\include;C:\AdaptiveCameraNetworkPack\opencv\build\include\opencv2;C:\AdaptiveCameraNetworkPack\opencv\build\include\opencv;C:\AdaptiveCameraNetworkPack\opencv\build\include;C:\AdaptiveCameraNetworkPack\Qt\include;.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\AdaptiveCameraNetworkPack\boost_1_57_0\boost_1_57_0;C:\AdaptiveCameraNetworkPack\MYSQLC++BUILDS\mysqlconn;C:\AdaptiveCameraNetworkPack\MYSQLC++BUILDS\Mysql\libmysql\X64\Release;C:\AdaptiveCameraNetworkPack\mysql-connector-c++-1.1.1;C:\AdaptiveCameraNetworkPack\mysql-connector-c++-1.1.1\driver;C:\AdaptiveCameraNetworkPack\mysql-server-5.7\include;C:\AdaptiveCameraNetworkPack\opencv\build\include\opencv2;C:\AdaptiveCameraNetworkPack\opencv\build\include\opencv;C:\AdaptiveCameraNetworkPack\opencv\build\include;C:\AdaptiveCameraNetworkPack\Qt\include;.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -99,7 +99,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
-      <AdditionalLibraryDirectories>C:\AdaptiveCameraNetworkPack\MYSQLC++BUILDS\mysqlconn\Dynamic_Build\driver\Debug;C:\AdaptiveCameraNetworkPack\MYSQLC++BUILDS\Mysql\libmysql\X64\Release;C:\Qt\Qt5.5.0\5.5\msvc2013_64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\AdaptiveCameraNetworkPack\CamNetPlat\x64\Debug;C:\AdaptiveCameraNetworkPack\MYSQLC++BUILDS\mysqlconn\Dynamic_Build\driver\Debug;C:\AdaptiveCameraNetworkPack\MYSQLC++BUILDS\Mysql\libmysql\X64\Release;C:\Qt\Qt5.5.0\5.5\msvc2013_64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>mysqlcppconn.lib;libmysql.lib;qtmaind.lib;Qt5Cored.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
@@ -140,17 +140,16 @@
     <ClCompile Include="caviar_hits.cpp" />
     <ClCompile Include="dbaccesslayer.cpp" />
     <ClCompile Include="humanhits.cpp" />
+    <ClCompile Include="momentstructures2.cpp" />
+    <ClCompile Include="systemdata.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="caviar_hits.h" />
     <ClInclude Include="dbaccesslayer.h" />
     <ClInclude Include="dbaccesslayer_global.h" />
     <ClInclude Include="humanhits.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\HumanReIdent\HumanReIdent.vcxproj">
-      <Project>{4f208e75-74fb-4fd8-a1db-608347be0f04}</Project>
-    </ProjectReference>
+    <ClInclude Include="momentstructures2.h" />
+    <ClInclude Include="systemdata.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
