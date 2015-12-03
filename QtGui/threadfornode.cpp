@@ -177,17 +177,19 @@ void ThreadForNode::run()
 
 
 		// change blob into TrackingHumanBlob when code is done //
-		for (vector<models::Blob>::iterator i = blobs.begin(); i != blobs.end(); i++)
+		for (vector<models::HumanBlob>::iterator i = trackingHumanBlobs.begin(); i != trackingHumanBlobs.end(); i++)
 		{
-			resizeContour(i->getContour(), sx, sy, &cnt);
+			resizeContour(i->blob.getContour(), sx, sy, &cnt);
 			Rect br = boundingRect(cnt);
 			rectStart = Point(br.x, br.y);
 			rectEnd = Point(br.width, br.height);
+			qpainter.setPen(Qt::yellow);
+			qpainter.setFont(QFont("Times", 8, QFont::StyleItalic));
 			qpainter.drawRect(rectStart.x, rectStart.y, rectEnd.x, rectEnd.y);
+			qpainter.drawText(QRect(rectStart.x, rectStart.y, rectEnd.x, rectEnd.y), Qt::AlignTop, QString::fromStdString(i->profileID));
 		}
 
 		
-
 		waitForAcknowledge();
 		emit sendFrameToMain(outImage, this);
 		this->acknowledged = false;
@@ -264,4 +266,10 @@ void ThreadForNode::mockFunction(vector<models::Blob> *blobs, vector<models::Hum
 		tokens.push_back(item);
 	}
 	vector<BlobId> profiledBlobs = blbDetection.matchProfilesWithBlobs(blobContourVector, timeStr, tokens[tokens.size()-1]);
+	for (int i = 0; i < profiledBlobs.size(); i++)
+	{
+		HumanBlob hb = HumanBlob(blobs->at(i));
+		hb.profileID = profiledBlobs[i].Id;
+		trackingHumanBlobs->push_back(hb);
+	}
 }

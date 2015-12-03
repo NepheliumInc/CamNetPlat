@@ -7,7 +7,7 @@
 #include "QtCore\qdebug.h"
 #include "QtCore\qobject.h"
 #include "QtCore\qthread.h"
-#include "qimage.h"
+#include "QtGui\qimage.h"
 
 using namespace std;
 

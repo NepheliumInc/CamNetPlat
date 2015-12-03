@@ -35,7 +35,7 @@ public class File_Handler {
 	public void file_action(){
 	try {
 			
-			conn = DriverManager.getConnection(db_connection_string + db_name, "root", "root");
+			conn = DriverManager.getConnection(db_connection_string + db_name, "root", "");
 			if (conn != null)
 				System.out.println("The connection is open");
 

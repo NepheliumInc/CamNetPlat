@@ -2,7 +2,7 @@
 public class MainClass {
 	public static void main(String args[]){
 		
-		File_Handler fh=new File_Handler("C:\\AdaptiveCameraNetworkPack\\DBHandling\\Camsnet_data_transfer\\camera_6_data.txt","camera_node_6");
+		File_Handler fh=new File_Handler("C:\\AdaptiveCameraNetworkPack\\CamNetPlat\\Camsnet_data_transfer\\camera_6_data.txt","camera_node_6");
 		fh.setDb_connection_string("jdbc:mysql://localhost:3306/");       //the database name is "camera"
 		fh.file_action();
 
