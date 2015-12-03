@@ -182,9 +182,10 @@ bool BlobDetection::isQualifyingContour(vector<Point> contour)
 	
 
 }
-bool BlobDetection::isQualifyingContour(vector<Point> contour, vector<vector<Point>>cutOffRegions)
+bool BlobDetection::isQualifyingContour(vector<Point> contour, vector<Point>cutOffRegion, vector<vector<Point>> *blobsInCutoff)
 {
-	bool result = false;
+
+	bool ratioQualified = false;
 	int minimum_width = 30;//30;
 	int maximum_width = 180;//100;
 	int minimum_height = 30;// 30;
@@ -197,21 +198,37 @@ bool BlobDetection::isQualifyingContour(vector<Point> contour, vector<vector<Poi
 		heightToWidthRatio	>	minimum_htow_ratio
 		)
 	{
-		result = true;
+		ratioQualified = true;
 	}
 
-	//second test
-	// pointPolygonTest(InputArray contour, Point2f pt, bool measureDist)
-	//Performs a point - in - contour test.
-	//contour – Input contour.
-	//pt – Point tested against the contour.
-	//measureDist – If true, the function estimates the signed distance from the point to the nearest contour edge.Otherwise, the function only checks if the point is inside a contour or not.
-	//The function determines whether the point is inside a contour, outside, or lies on an edge(or coincides with a vertex).It returns positive(inside), negative(outside), or zero(on an edge) value, correspondingly.When measureDist = false, the return value is + 1, -1, and 0, respectively.Otherwise, the return value is a signed distance between the point and the nearest contour edge.
-	//See below a sample output of the function where each image pixel is tested against the contour.
+	if (ratioQualified)
+	{
+		bool withinCutOff = true;
+		vector<Point> boundinBox;
+		//int constantval = 300;
+		boundinBox.push_back(Point(roi.x, roi.y));
+		boundinBox.push_back(Point(roi.x + roi.width, roi.y));
+		boundinBox.push_back(Point(roi.x + roi.width, roi.y + roi.width));
+		boundinBox.push_back(Point(roi.x , roi.y + roi.width));
 
+		for (int pointId = 0; pointId < boundinBox.size(); pointId++)
+		{
+			Point pt = boundinBox[pointId];
+			int withinCutOffD = pointPolygonTest(cutOffRegion, pt, true);
+			if (withinCutOffD<0)
+			{
+				//if at least one point is not within the cutoff region this becomes a qualifying blob
+				return true;
+			}
+		}
+		//if this point is reached the whole contour is withing the cutoff
+	
+		blobsInCutoff->push_back(contour);
+		return false;
 
-	return result;
-
+	}
+	//This is reached if ratioQualified is false
+	return ratioQualified;
 
 }
 
@@ -235,11 +252,19 @@ vector<BlobId> BlobDetection::matchProfilesWithBlobs(vector< vector< Point> > co
 		for (int profileCount = 0; profileCount < profilesExisting.size(); profileCount++)
 		{
 			Profile savedProfile = profilesExisting[profileCount];
+			
+
 			double distance = sqrt(
 				(currentCentrePoint.x - savedProfile.centreX)*(currentCentrePoint.x - savedProfile.centreX)
 				+
 				(currentCentrePoint.y - savedProfile.centreY)*(currentCentrePoint.y - savedProfile.centreY)
 				);
+
+		
+			if (abs(currentCentrePoint.x - savedProfile.centreX) > 120 || abs(currentCentrePoint.y - savedProfile.centreY) > 100)
+			{
+				continue;
+			}
 			if (minDistance = -1 || minDistance > distance)
 			{
 				minDistance = distance;
