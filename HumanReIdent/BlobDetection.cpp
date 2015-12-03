@@ -16,13 +16,13 @@
 
 BlobDetection::BlobDetection()
 {
-	//pMOG2_g = gpu::MOG2_GPU(30);
-	//pMOG2_g.history = 3000; //300;
-	//pMOG2_g.varThreshold = 128; //64; //128; //64; //32;//; 
-	//pMOG2_g.bShadowDetection = false; // true;//
+	pMOG2_g = gpu::MOG2_GPU(30);
+	pMOG2_g.history = 300; //300;
+	pMOG2_g.varThreshold = 15; //64; //128; //64; //32;//; 
+	pMOG2_g.bShadowDetection = true; // true;//
 
-	//gpurgb2 = vector< gpu::GpuMat>(3);
-	//gpurgb = vector< gpu::GpuMat>(3);
+	gpurgb2 = vector< gpu::GpuMat>(3);
+	gpurgb = vector< gpu::GpuMat>(3);
 
 	element = getStructuringElement(MORPH_RECT, Size(9, 9), Point(4, 4));
 }
@@ -61,15 +61,13 @@ vector< vector< Point> > BlobDetection::detectContours(Mat frame, Ptr< Backgroun
 	fgMaskMOG2 = fgMaskMOG2X.clone();
 	return result;
 }
-/*
-vector<vector<Point>> BlobDetection::GPU_DetectContours(Mat o_frame, gpu::GpuMat o_frame_gpu, float& scaleX2, float& scaleY2)
+
+vector<vector<Point>> BlobDetection::GPU_DetectContours(Mat o_frame, gpu::GpuMat o_frame_gpu)
 {
 
 	//scale and check processing time
 	float scaleX = float(o_frame.size().width) / RWIDTH;
 	float scaleY = float(o_frame.size().height) / RHEIGHT;
-	scaleX2 = RWIDTH2 / float(RWIDTH);
-	scaleY2 = RHEIGHT2 / float(RHEIGHT);
 
 	unsigned long AAtime = 0, BBtime = 0;
 	const clock_t begin_time = clock(); // by niro
@@ -79,11 +77,9 @@ vector<vector<Point>> BlobDetection::GPU_DetectContours(Mat o_frame, gpu::GpuMat
 
 	//resize
 	gpu::resize(o_frame_gpu, r_frame_gpu, Size(RWIDTH, RHEIGHT)); //for blob labeling
-	//gpu::resize(o_frame_gpu, r_frame2_gpu, Size(RWIDTH2, RHEIGHT2)); //for FREAK featrue 
-	//r_frame_gpu = o_frame_gpu.clone();
-	//r_frame2_gpu = o_frame_gpu.clone();
 	//AAtime = getTickCount();
-	//blur
+	
+	//blur red blue and green channels
 	gpu::split(r_frame_gpu, gpurgb);
 	gpu::blur(gpurgb[0], gpurgb2[0], Size(3, 3));
 	gpu::blur(gpurgb[1], gpurgb2[1], Size(3, 3));
@@ -97,6 +93,8 @@ vector<vector<Point>> BlobDetection::GPU_DetectContours(Mat o_frame, gpu::GpuMat
 	gpu::morphologyEx(Mog_Mask_g, Mog_MaskMorpho_g, CV_MOP_DILATE, element);
 	//binary
 	gpu::threshold(Mog_MaskMorpho_g, r_binary_gpu, 128, 255, CV_THRESH_BINARY);
+	
+	
 	//Blob Labeling
 	//Find contour   
 	Mat ContourImg;
@@ -107,55 +105,20 @@ vector<vector<Point>> BlobDetection::GPU_DetectContours(Mat o_frame, gpu::GpuMat
 		contours, // a vector of contours   
 		CV_RETR_EXTERNAL, // retrieve the external contours   
 		CV_CHAIN_APPROX_NONE); // all pixels of each contours  
-
-	vector< Rect > output;
-	vector< vector< Point> >::iterator itc = contours.begin();
-
-	///Display  
-	//Mat showMat2_r;
-	//r_frame2_gpu.download(showMat2_r);
-
-	//Blob labeling
-	while (itc != contours.end()) {
-
-		//Create bounding rect of object   
-		//rect draw on origin image   
-		Rect mr = boundingRect(Mat(*itc));
-
-		mr.x = mr.x * scaleX;
-		mr.y = mr.y * scaleY;
-		mr.width = mr.width * scaleX;
-		mr.height = mr.height * scaleY;
-
-		rectangle(o_frame, mr, CV_RGB(255, 0, 0), 2);
-		++itc;
-	}
-
+	
 	//processing time print
 	//BBtime = getTickCount();
 	//float pt = (BBtime - AAtime) / getTickFrequency();
 	//float fpt = 1 / pt;
 	//printf("gpu %.4lf / %.4lf \n", pt, fpt);
 	float time = float(clock() - begin_time) / CLOCKS_PER_SEC;
-	qDebug() << "Back ground Substraction Time in GPU" << time;// by niro
-
-	//Display 
-	//Mat showMat_r_blur;
-	//Mat showBinary;
-	//r_binary_gpu.download(showBinary);
-	//imshow("binary2", showBinary);
-	//Mog_Mask_g.download(Mog_Mask);
-	//r_blur_gpu.download(showMat_r_blur);
-	//imshow("blur", showMat_r_blur);
-	//imshow("origin", showMat2_r);
-	//imshow("mog_mask", Mog_Mask);
-	/////////////////////////////////////////////////////////////////////////
-
+	qDebug() << "Back ground Substraction Time in GPU" << time << " ms";// by niro
+	
 	return contours;
 
 
 }
-*/
+
 bool BlobDetection::isQualifyingContour(vector<Point> contour)
 { 
 	bool result = false;
