@@ -16,7 +16,7 @@ caviar_hits::~caviar_hits()
 void caviar_hits::addCaviarHit(string img_id, int region_id, int human_id_actual, double av0, double av1, double av2, double stdDev0, double stdDev1, double stdDev2, double skew0, double skew1, double skew2)
 {
 	driver = sql::mysql::get_mysql_driver_instance();
-	con = driver->connect("tcp://127.0.0.1:3306", "root", "");
+	con = driver->connect("tcp://127.0.0.1:3306", "root", "root");
 
 	stmt = con->createStatement();
 	stmt->execute("USE camera");

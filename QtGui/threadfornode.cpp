@@ -241,6 +241,7 @@ void ThreadForNode::resizeContour(vector<Point> contour, double xScalar, double 
 
 void ThreadForNode::mockFunction(vector<models::Blob> *blobs, vector<models::HumanBlob> *trackingHumanBlobs, VideoCapture *cap)
 {
+	trackingHumanBlobs->clear();
 	vector<vector<Point>> blobContourVector;
 	for (vector<models::Blob>::iterator it = blobs->begin(); it != blobs->end(); it++)
 	{

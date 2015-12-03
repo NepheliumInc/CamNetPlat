@@ -121,7 +121,7 @@ vector<Profile> HumanHits::getAllProfilesInSecond(string absoluteTime, string ca
 {
 	vector<Profile> profiles;
 	driver = sql::mysql::get_mysql_driver_instance();
-	con = driver->connect("tcp://127.0.0.1:3306", "root", "");
+	con = driver->connect("tcp://127.0.0.1:3306", "root", "root");
 
 	stmt = con->createStatement();
 	stmt->execute("USE camera");
