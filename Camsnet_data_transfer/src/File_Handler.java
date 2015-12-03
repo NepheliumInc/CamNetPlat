@@ -42,9 +42,24 @@ public class File_Handler {
 		} catch (SQLException ex) {
 			// handle any errors
 			System.out.println("SQLException: " + ex.getMessage());
-			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("SQLTABLE State: " + ex.getSQLState());
 			System.out.println("VendorError: " + ex.getErrorCode());
 		}
+
+	///DELETE TABLE
+	String table_deletion= "DROP TABLE " + table_name;
+	try {
+		statement=(Statement) conn.createStatement();
+		System.out.println(table_deletion);
+		statement.execute(table_deletion);
+
+	} catch (Exception e) {
+		// TODO Auto-generated catch block
+		System.out.println(table_creation + " DOES NOT EXIST");
+		e.printStackTrace();
+	}
+
+	///CREATETABLE
 	table_creation=table_creation+ "CREATE TABLE `"
 			+ table_name
 			+ "` ( `Record_ID` int(11) NOT NULL, `Video_ID` int(11) NOT NULL, `Profile_ID` varchar(10) NOT NULL, `TimeStamp` double NOT NULL, `Blob_Center_Point` varchar(10) NOT NULL, PRIMARY KEY (`Record_ID`)) ENGINE=InnoDB DEFAULT CHARSET=latin1";
@@ -92,21 +107,21 @@ public class File_Handler {
 				else{
 					System.out.println("Somethings is not right");
 				}
-
-				sql.append(value_stting);
-				sql_second_length=sql.length();
-				//System.out.println(sql);
-				try {
-					statement=(Statement) conn.createStatement();
-					String temp_sql= new String(sql);
-					System.out.println(temp_sql);
-					statement.executeUpdate(temp_sql);
-					sql.delete(sql_ini_length,sql_second_length);
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				if(value_stting.length() != 0) {
+					sql.append(value_stting);
+					sql_second_length = sql.length();
+					//System.out.println(sql);
+					try {
+						statement = (Statement) conn.createStatement();
+						String temp_sql = new String(sql);
+						System.out.println(temp_sql);
+						statement.executeUpdate(temp_sql);
+						sql.delete(sql_ini_length, sql_second_length);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-				
 				value_stting.delete(0, value_stting.length());
 				record_id++;
 			}
