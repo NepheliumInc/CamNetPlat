@@ -34,7 +34,7 @@ public:
 	vector<vector<Point>> detectContours(Mat frame, Ptr< BackgroundSubtractor>& pMOG2, Mat& fgMaskMOG2);
 	vector<vector<Point>> GPU_DetectContours(Mat o_frame, gpu::GpuMat o_frame_gpu);
 	bool isQualifyingContour(vector<Point> contour);
-	bool isQualifyingContour(vector<Point> contour, vector<vector<Point>>cutOffRegions);
+	bool isQualifyingContour(vector<Point> contour, vector<Point> cutOffRegions, vector<vector<Point>>* blobsInCutoff);
 	vector<vector<Point>> detectEnclosingConvexHull(vector< vector< Point> >  contours); 
 	vector<BlobId> matchProfilesWithBlobs(vector< vector< Point> > contours, string absoluteTime, string cameraNode);
 

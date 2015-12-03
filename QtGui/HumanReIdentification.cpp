@@ -189,7 +189,7 @@ void segmentImage(Mat src)
 
 }
 
-int mainHR()
+int main()
 {
 
 	
@@ -205,7 +205,7 @@ int mainHR()
 	Ptr< BackgroundSubtractor> pMOG2Pointer; //MOG2 Background subtractor
 	pMOG2Pointer = new BackgroundSubtractorMOG2(300, 32, true);//300,0.0);
 	string prefix = "C:\\Users\\dehandecroos\\Desktop\\Videos\\";
-	string files[] = {	"PRG14.avi",
+	string files[] = {	"PRG29.avi",
 						"PRG1.avi", 
 						"PRG28.avi",
 						"PRG22.avi",
@@ -226,7 +226,7 @@ int mainHR()
 		cvSetWindowProperty("DrawnOnOri", CV_WND_PROP_AUTOSIZE, CV_WINDOW_NORMAL);
 		cvSetWindowProperty("DrawnOnOri", CV_WND_PROP_ASPECTRATIO, CV_WINDOW_KEEPRATIO);
 		cvResizeWindow("DrawnOnOri", 1400, 800);
-		stream1.set(CV_CAP_PROP_POS_MSEC, 80000);
+		//stream1.set(CV_CAP_PROP_POS_MSEC, 80000);
 		while (true) 
 		{
 			int totalTime =0;
@@ -245,21 +245,24 @@ int mainHR()
 
 			contours = blbDetect.detectContours(frame, pMOG2Pointer, fgMaskMOG2);
 
-			//***********************
-			int timec = ti.elapsed();
-			qDebug("Time elapsed: %d For contourDetection", timec);
-			totalTime += timec;
-			ti.restart();
-			//***************************
+
 			Rect roi;
 			vector<vector<Point> >hulls;
 			vector< vector< Point> > filteredContours;
 
-
+			vector<Point> cutoffRegion;
+			//int constantval = 300;
+			cutoffRegion.push_back(Point(0, 0));
+			cutoffRegion.push_back(Point(170, 0));
+			cutoffRegion.push_back(Point(180, 290));
+			cutoffRegion.push_back(Point(110,450));
+			cutoffRegion.push_back(Point(0, 480));
+			vector<vector<Point>> blobsInCutoff;
 			while (contours.size() != 0)
 			{
 				vector<Point> contour = contours[contours.size() - 1];
-				if (blbDetect.isQualifyingContour(contour))
+				
+				if (blbDetect.isQualifyingContour(contour, cutoffRegion, &blobsInCutoff))
 				{
 					vector<Point> tempHull;
 					convexHull(Mat(contour), tempHull, false);
@@ -268,12 +271,6 @@ int mainHR()
 				}
 				contours.pop_back();
 			}
-			//***********************
-			timec = ti.elapsed();
-			qDebug("Time elapsed: %d For Contour shapes", timec);
-			totalTime += timec;
-			ti.restart();
-			//***************************
 
 			//Print Current Time in Frame
 			int time = static_cast<int>(stream1.get(CV_CAP_PROP_POS_MSEC));
@@ -289,32 +286,32 @@ int mainHR()
 				timeStr = to_string(mins) + "." + to_string(seconds);
 			}
 
-			//***********************
-		
+
 
 			vector<BlobId> profiledBlobs;
 			if (filteredContours.size() != 0){
 				profiledBlobs = blb.matchProfilesWithBlobs(filteredContours, timeStr, file);
 
 			}
-			//***********************
-			timec =  ti.elapsed();
-			qDebug("Time elapsed: %d profilemapping", timec);
-			totalTime += timec;
-			ti.restart();
-			//***************************
 
 			//Draw the hull borders and fill in white to create the "hullDrawing" mask 
 			Mat drawnOnOriginal = originalFrame.clone();
 			Mat hullDrawing(frame.size(), CV_8UC3);
 			floodFill(hullDrawing, Point(), Scalar(255, 255, 255));
+			//Draw cutoff
+
+			Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0, 255), rng.uniform(0, 255));
+			for (int i = 0; i < cutoffRegion.size()-1; i++)
+			{
+				line(drawnOnOriginal, cutoffRegion[i], cutoffRegion[i + 1], color, 2);
+			}
+			
+
 			for (int i = 0; i < filteredContours.size(); i++)
 			{
 				Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0, 255), rng.uniform(0, 255));
 				drawContours(hullDrawing, hulls, i, color, 1, 8, vector<Vec4i>(), 0, Point());
 				drawContours(drawnOnOriginal, hulls, i, color, 1, 8, vector<Vec4i>(), 0, Point());
-
-				
 			}
 			for (int i = 0; i < profiledBlobs.size(); i++)
 			{
@@ -329,22 +326,26 @@ int mainHR()
 				++itc;
 			}
 
+			//int size = blobsInCutoff.size();
+			vector< vector< Point> >::iterator itc2 = blobsInCutoff.begin();
+			while (itc2 != blobsInCutoff.end()) {
+				Rect mr = boundingRect(Mat(*itc2));
+				rectangle(drawnOnOriginal, mr, CV_RGB(0, 255, 0), 3);
+				Point textOrg(mr.x + mr.width/2, mr.y + mr.height/2);
+				putText(drawnOnOriginal, "OUT", textOrg, FONT_HERSHEY_COMPLEX_SMALL, 1, cvScalar(0, 0, 0), 1, CV_AA);
+				++itc2;
+			}
+
 			floodFill(hullDrawing, Point(), Scalar(0, 0, 0));
 			putText(drawnOnOriginal, timeStr, cvPoint(30, 30),
 				FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0, 0, 0), 2, CV_AA);
 
-			//***********************
-			timec = ti.elapsed();
-			qDebug("Time elapsed: %d drawing", timec);
-			totalTime += timec;
-			ti.restart();
-			//***************************
+
 			imshow("DrawnOnOri", drawnOnOriginal);
 
 
 			cvWaitKey(1);
-			qDebug("Time elapsed: %d is All", totalTime);
-			totalTime = 0;
+		
 			
 		}
 	}
