@@ -37,6 +37,9 @@
     <ClCompile Include="systemdata.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="momentstructures2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dbaccesslayer.h">
@@ -52,6 +55,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="systemdata.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="momentstructures2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

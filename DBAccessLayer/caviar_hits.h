@@ -1,7 +1,6 @@
 #ifndef CAVIAR_HITS_H
 #define CAVIAR_HITS_H
 
-#include "stdafx.h"
 #include "dbaccesslayer_global.h"
 
 #include "mysql_connection.h"
@@ -17,9 +16,9 @@
 #include <QtCore\qdebug.h>
 #include <QtCore\qmath.h>
 
-#include <stdio.h>
+#include "momentstructures2.h"
 
-#include "MomentStructures2.h"
+#include <stdio.h>
 using namespace std;
 using namespace sql;
 using namespace mysql;

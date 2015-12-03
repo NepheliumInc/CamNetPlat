@@ -44,9 +44,6 @@
     <ClCompile Include="BlobDetection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="momentstructures2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="momentcalculation2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -73,10 +70,5 @@
     <ClInclude Include="NodeParameterObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="momentstructures2.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
   </ItemGroup>
 </Project>

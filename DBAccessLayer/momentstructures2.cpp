@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "momentstructures2.h"
 
 //Data structures derived to handle color moments

@@ -2,10 +2,9 @@
 #define MOMENTSTRUCTURES2_H
 
 #include "QtCore\qobject.h"
-#include "humanreident_global.h"
-#include <stdafx.h>	
+#include "dbaccesslayer_global.h"
 
-class HUMANREIDENT_EXPORT MomentStructures2 
+class DBACCESSLAYER_EXPORT MomentStructures2 
 {
 
 public:
@@ -18,7 +17,7 @@ private:
 	
 };
 
-class HUMANREIDENT_EXPORT MomentAverage : public MomentStructures2
+class DBACCESSLAYER_EXPORT MomentAverage : public MomentStructures2
 {
 public:
 	
@@ -31,7 +30,7 @@ public:
 
 };
 
-class HUMANREIDENT_EXPORT MomentStandardDeviation : public MomentStructures2
+class DBACCESSLAYER_EXPORT MomentStandardDeviation : public MomentStructures2
 {
 
 public:
@@ -42,7 +41,7 @@ public:
 
 };
 
-class HUMANREIDENT_EXPORT MomentSkewness : public MomentStructures2
+class DBACCESSLAYER_EXPORT MomentSkewness : public MomentStructures2
 {
 
 public:
@@ -53,7 +52,7 @@ public:
 
 };
 
-class HUMANREIDENT_EXPORT Region
+class DBACCESSLAYER_EXPORT Region
 {
 
 public:
@@ -84,7 +83,7 @@ private:
 
 
 
-class HUMANREIDENT_EXPORT Blob
+class DBACCESSLAYER_EXPORT Blob
 {
 public:
 	std::string hitId;

@@ -1,7 +1,6 @@
 #ifndef HUMANHITS_H
 #define HUMANHITS_H
 
-#include "stdafx.h"
 #include "dbaccesslayer_global.h"
 
 #include "mysql_connection.h"
