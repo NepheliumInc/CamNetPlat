@@ -40,8 +40,18 @@ int VideoProcessing::GPU_BlobDetection(Mat frame, Ptr<BackgroundSubtractor> pMOG
 }
 
 
-int VideoProcessing::humanDetection(vector<models::Blob> *blobs, Mat *frame, vector<models::HumanBlob> *outHumanBlobs, VideoCapture *cap, string link){
-	
+int VideoProcessing::humanDetection(vector<models::Blob> *blobs, Mat *frame, vector<models::HumanBlob> *outHumanBlobs, VideoCapture *cap, string link)
+{
+	for (vector<models::Blob>::iterator i = blobs->begin(); i != blobs->end(); i++)
+	{
+		models::HumanBlob hb = models::HumanBlob(*i);
+		hb.profileID = "NULL";
+		outHumanBlobs->push_back(hb);
+	}
+	return outHumanBlobs->size();
+
+
+
 	vector<vector<Point>> blobContourVector;
 	for (vector<models::Blob>::iterator it = blobs->begin(); it != blobs->end(); it++)
 	{

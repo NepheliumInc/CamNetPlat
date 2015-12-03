@@ -45,6 +45,8 @@ void ThreadForNode::run()
 		if (cap.get(CV_CAP_PROP_POS_FRAMES) == cap.get(CV_CAP_PROP_FRAME_COUNT))
 			ended = true;
 
+		cvtColor(frame, frame, CV_BGR2RGB);
+
 		frameToBeRaped = frame.clone();
 		// ////////////////// //
 		// process begin here //
@@ -79,7 +81,8 @@ void ThreadForNode::run()
 		vector<Point> temp;
 		for (vector<models::Blob>::iterator i = blobs.begin(); i != blobs.end(); i++)
 		{
-			resizeContour(i->getContour(), 2.200005, 2.000000, &temp);
+			resizeContour(i->getContour(), 2.200005, 2.000000, &temp); // camnet dataset
+			//resizeContour(i->getContour(), 1.100005, 1.200000, &temp); // senior data set
 			i->setContour(temp);
 			temp.clear();
 		}

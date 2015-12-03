@@ -32,6 +32,15 @@ int Graph::initGraph()
 	addNode(Node("C007", "C:/AdaptiveCameraNetworkPack/Videos/PRG28.avi", exitPointsList, 70));
 	addNode(Node("C008", "C:/AdaptiveCameraNetworkPack/Videos/PRG29.avi", exitPointsList, 115));
 
+	//addNode(Node("C001", "C:/Users/niro273/Desktop/seniors-videos/video/1.mov", exitPointsList, 0));
+	//addNode(Node("C002", "C:/Users/niro273/Desktop/seniors-videos/video/2.mov", exitPointsList, 0));
+	//addNode(Node("C003", "C:/Users/niro273/Desktop/seniors-videos/video/3.mov", exitPointsList, 0));
+	//addNode(Node("C004", "C:/Users/niro273/Desktop/seniors-videos/video/4.mov", exitPointsList, 0));
+	//addNode(Node("C005", "C:/Users/niro273/Desktop/seniors-videos/video/5.mov", exitPointsList, 0));
+	//addNode(Node("C006", "C:/Users/niro273/Desktop/seniors-videos/video/6.mov", exitPointsList, 0));
+	//addNode(Node("C007", "C:/Users/niro273/Desktop/seniors-videos/video/7.mov", exitPointsList, 0));
+	//addNode(Node("C008", "C:/Users/niro273/Desktop/seniors-videos/video/9.mov", exitPointsList, 0));
+
 	addNeighbour("C001", "C002", 8, 1);
 	addNeighbour("C002", "C001", 2, 1);
 
