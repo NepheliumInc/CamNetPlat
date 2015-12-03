@@ -25,8 +25,13 @@
       <file leaf-file-name="File_Handler.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/File_Handler.java">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state vertical-scroll-proportion="0.4894068">
               <caret line="37" column="84" selection-start-line="37" selection-start-column="84" selection-end-line="37" selection-end-column="84" />
+=======
+            <state vertical-scroll-proportion="0.0" vertical-offset="646" max-vertical-offset="2193">
+              <caret line="38" column="29" selection-start-line="38" selection-start-column="29" selection-end-line="38" selection-end-column="29" />
+>>>>>>> ee7b971671714735e1b9e7ab3b6a9f4ebf71de60
               <folding />
             </state>
           </provider>
@@ -35,7 +40,11 @@
       <file leaf-file-name="ProfileTimeRange.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/ProfileTimeRange.java">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state vertical-scroll-proportion="0.0">
+=======
+            <state vertical-scroll-proportion="0.0" vertical-offset="408" max-vertical-offset="748">
+>>>>>>> ee7b971671714735e1b9e7ab3b6a9f4ebf71de60
               <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
               <folding />
             </state>
@@ -45,8 +54,13 @@
       <file leaf-file-name="MainClass.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/MainClass.java">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state vertical-scroll-proportion="-5.267857">
               <caret line="36" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
+=======
+            <state vertical-scroll-proportion="0.8366337" vertical-offset="206" max-vertical-offset="1020">
+              <caret line="32" column="133" selection-start-line="32" selection-start-column="133" selection-end-line="32" selection-end-column="133" />
+>>>>>>> ee7b971671714735e1b9e7ab3b6a9f4ebf71de60
               <folding />
             </state>
           </provider>
@@ -54,6 +68,9 @@
       </file>
       <file leaf-file-name="camera_6_data.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/camera_6_data.txt">
+          <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
+            <state />
+          </provider>
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="204" column="13" selection-start-line="204" selection-start-column="13" selection-end-line="204" selection-end-column="13" />
@@ -80,6 +97,7 @@
               <folding />
             </state>
           </provider>
+<<<<<<< HEAD
         </entry>
       </file>
       <file leaf-file-name="camera_29_data.txt" pinned="false" current-in-tab="false">
@@ -100,6 +118,8 @@
               <folding />
             </state>
           </provider>
+=======
+>>>>>>> ee7b971671714735e1b9e7ab3b6a9f4ebf71de60
         </entry>
       </file>
     </leaf>
@@ -180,9 +200,12 @@
       <sortByType />
     </navigator>
     <panes>
+<<<<<<< HEAD
       <pane id="PackagesPane" />
       <pane id="Scope" />
       <pane id="Scratches" />
+=======
+>>>>>>> ee7b971671714735e1b9e7ab3b6a9f4ebf71de60
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -217,6 +240,12 @@
           </PATH>
         </subPane>
       </pane>
+<<<<<<< HEAD
+=======
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
+      <pane id="Scratches" />
+>>>>>>> ee7b971671714735e1b9e7ab3b6a9f4ebf71de60
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -375,11 +404,12 @@
       <updated>1447997518535</updated>
       <workItem from="1449076548877" duration="389000" />
       <workItem from="1449113035905" duration="1936000" />
+      <workItem from="1449129597848" duration="625000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2325000" />
+    <option name="totallyTimeSpent" value="2950000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-13" y="-13" width="2714" height="1632" extended-state="7" />
@@ -458,6 +488,7 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/File_Handler.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state vertical-scroll-proportion="0.0">
           <caret line="109" column="42" selection-start-line="109" selection-start-column="42" selection-end-line="109" selection-end-column="42" />
           <folding />
@@ -523,6 +554,9 @@
     <entry file="file://$PROJECT_DIR$/src/File_Handler.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
+=======
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2193">
+>>>>>>> ee7b971671714735e1b9e7ab3b6a9f4ebf71de60
           <caret line="38" column="29" selection-start-line="38" selection-start-column="29" selection-end-line="38" selection-end-column="29" />
           <folding />
         </state>
@@ -530,7 +564,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/ProfileTimeRange.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state vertical-scroll-proportion="0.0">
+=======
+        <state vertical-scroll-proportion="0.0" vertical-offset="408" max-vertical-offset="748">
+>>>>>>> ee7b971671714735e1b9e7ab3b6a9f4ebf71de60
           <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
           <folding />
         </state>
@@ -538,15 +576,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/MainClass.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+=======
+        <state vertical-scroll-proportion="0.0" vertical-offset="119" max-vertical-offset="680">
+          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+>>>>>>> ee7b971671714735e1b9e7ab3b6a9f4ebf71de60
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/camera_6_data.txt">
+<<<<<<< HEAD
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
+=======
+      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="306" max-vertical-offset="5661">
+>>>>>>> ee7b971671714735e1b9e7ab3b6a9f4ebf71de60
           <caret line="18" column="16" selection-start-line="18" selection-start-column="16" selection-end-line="18" selection-end-column="16" />
           <folding />
         </state>
@@ -554,7 +605,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/File_Handler.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state vertical-scroll-proportion="0.0">
+=======
+        <state vertical-scroll-proportion="0.0" vertical-offset="159" max-vertical-offset="2023">
+>>>>>>> ee7b971671714735e1b9e7ab3b6a9f4ebf71de60
           <caret line="99" column="0" selection-start-line="99" selection-start-column="0" selection-end-line="99" selection-end-column="0" />
           <folding />
         </state>
@@ -577,6 +632,9 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/camera_6_data.txt">
+      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="18" column="16" selection-start-line="18" selection-start-column="16" selection-end-line="18" selection-end-column="16" />
@@ -609,6 +667,9 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/camera_6_data.txt">
+      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="18" column="16" selection-start-line="18" selection-start-column="16" selection-end-line="18" selection-end-column="16" />
@@ -792,12 +853,16 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/camera_6_data.txt">
+      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="204" column="13" selection-start-line="204" selection-start-column="13" selection-end-line="204" selection-end-column="13" />
           <folding />
         </state>
       </provider>
+<<<<<<< HEAD
     </entry>
     <entry file="file://$PROJECT_DIR$/camera_23_data.txt">
       <provider selected="true" editor-type-id="text-editor">
@@ -806,6 +871,8 @@
           <folding />
         </state>
       </provider>
+=======
+>>>>>>> ee7b971671714735e1b9e7ab3b6a9f4ebf71de60
     </entry>
     <entry file="file://$PROJECT_DIR$/camera_28_data.txt">
       <provider selected="true" editor-type-id="text-editor">
@@ -833,6 +900,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/MainClass.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state vertical-scroll-proportion="-5.267857">
           <caret line="36" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
           <folding />
@@ -843,6 +911,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.4894068">
           <caret line="37" column="84" selection-start-line="37" selection-start-column="84" selection-end-line="37" selection-end-column="84" />
+=======
+        <state vertical-scroll-proportion="0.8366337" vertical-offset="206" max-vertical-offset="1020">
+          <caret line="32" column="133" selection-start-line="32" selection-start-column="133" selection-end-line="32" selection-end-column="133" />
+>>>>>>> ee7b971671714735e1b9e7ab3b6a9f4ebf71de60
           <folding />
         </state>
       </provider>

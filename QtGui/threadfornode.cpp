@@ -67,45 +67,47 @@ void ThreadForNode::run()
 			qpainter.setFont(QFont("Times", 12, QFont::Normal));
 			qpainter.drawText(outImage.rect(), Qt::AlignTop, QString::fromStdString(to_string(cap.get(CV_CAP_PROP_POS_FRAMES))));
 
-			waitForAcknowledge();
-
 			emit sendFrameToMain(outImage, this);
 			this->acknowledged = false;
+
+			waitForAcknowledge();
+
 			continue;	// If no blobs detected continue while
 		}
 
-		mockFunction(&blobs, &trackingHumanBlobs, &cap);
+		//mockFunction(&blobs, &trackingHumanBlobs, &cap);
 
-		//if (trackingHumanBlobs.empty()) // blobs >>> unindentified
-		//{
-		//	unidentifiedBlobs = blobs;
-		//}
-		//else
-		//{
-		//	_vProcessing.dataAssociation(&blobs, &trackingHumanBlobs, &unidentifiedBlobs, &missingHumanBlobs);
-		//}
-		//
-		//if (!(unidentifiedBlobs.empty())) // unindentified >>> human
-		//{
-		//	_vProcessing.humanDetection(&unidentifiedBlobs, &frameToBeRaped, &humanBlobs);
-		//}
-		//
-		//if (!(humanBlobs.empty())) // human >>> trackinghuman
-		//{
-		//	_vProcessing.checkInProfiles(&humanBlobs, &possibleProfileList, &missingHumanBlobs, &trackingHumanBlobs);
-		//}
-		//
-		//if (!(humanBlobs.empty()))
-		//{
-		//	_vProcessing.initTrackingObject(&humanBlobs, &trackingHumanBlobs);
-		//}
-		//
-		//if (!(trackingHumanBlobs.empty()))
-		//{
-		//	_vProcessing.kalmanCorrectAndPredict(&trackingHumanBlobs);
-		//	//_vProcessing.informAdjecentNodes(&exitPoints, &trackingHumanBlobs);
-		//	//_vProcessing.UpdateCentralProfiles(&trackingHumanBlobs);
-		//}
+		if (trackingHumanBlobs.empty()) // blobs >>> unindentified
+		{
+			unidentifiedBlobs = blobs;
+		}
+		else
+		{
+			_vProcessing.dataAssociation(&blobs, &trackingHumanBlobs, &unidentifiedBlobs, &missingHumanBlobs);
+		}
+		
+		if (!(unidentifiedBlobs.empty())) // unindentified >>> human
+		{
+			// done through hardcoded function
+			_vProcessing.humanDetection(&unidentifiedBlobs, &frameToBeRaped, &humanBlobs, &cap, this->videoLink);
+		}
+		
+		if (!(humanBlobs.empty())) // human >>> trackinghuman
+		{
+			//_vProcessing.checkInProfiles(&humanBlobs, &possibleProfileList, &missingHumanBlobs, &trackingHumanBlobs);
+		}
+		
+		if (!(humanBlobs.empty()))
+		{
+			_vProcessing.initTrackingObject(&humanBlobs, &trackingHumanBlobs);
+		}
+		
+		if (!(trackingHumanBlobs.empty()))
+		{
+			_vProcessing.kalmanCorrectAndPredict(&trackingHumanBlobs);
+			//_vProcessing.informAdjecentNodes(&exitPoints, &trackingHumanBlobs);
+			//_vProcessing.UpdateCentralProfiles(&trackingHumanBlobs);
+		}
 
 
 
@@ -190,9 +192,9 @@ void ThreadForNode::run()
 		}
 
 		
-		waitForAcknowledge();
 		emit sendFrameToMain(outImage, this);
 		this->acknowledged = false;
+		waitForAcknowledge();
 	}
 
 	QImage finalImage(this->releventUiLable->width(), this->releventUiLable->width(), QImage::Format_RGB888);
@@ -202,9 +204,10 @@ void ThreadForNode::run()
 	qp.setFont(QFont("Times", 12, QFont::Bold));
 	qp.drawText(finalImage.rect(), Qt::AlignCenter, "END OF FILE!");
 
-	waitForAcknowledge();
 	emit sendFrameToMain(finalImage, this);
 	emit sendFinishedToMain();
+
+	waitForAcknowledge();
 	
 	qDebug() << "finished.";
 }
@@ -217,12 +220,15 @@ void ThreadForNode::updateProfileList(ProfileTransferObj profile)
 
 void ThreadForNode::waitForAcknowledge()
 {
-	if (!acknowledged)
+	mutex->lock();
+	isNotShown->wait(mutex);
+	mutex->unlock();
+	/*if (!acknowledged)
 	{
 		mutex->lock();
 			isNotShown->wait(mutex);
 		mutex->unlock();
-	}
+	}*/
 	//while (!acknowledged);
 
 }

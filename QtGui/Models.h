@@ -83,7 +83,7 @@ namespace models
 		~MissingHumanBlob();
 
 		HumanBlob humanBlob;
-		time_t missedTime;
+		int missedTime;
 	};
 	//#endif
 
