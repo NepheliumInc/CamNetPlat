@@ -13,7 +13,7 @@ SystemData::~SystemData()
 void SystemData::logSystemStartingTime()
 {
 	driver = sql::mysql::get_mysql_driver_instance();
-	con = driver->connect("tcp://127.0.0.1:3306", "root", "root");
+	con = driver->connect("tcp://127.0.0.1:3306", "root", "");
 
 	stmt = con->createStatement();
 	stmt->execute("USE camera");

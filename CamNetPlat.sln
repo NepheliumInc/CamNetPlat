@@ -10,6 +10,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DBAccessLayer", "DBAccessLayer\DBAccessLayer.vcxproj", "{63ED3B12-DCAD-411A-825E-4AE39019DA96}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HumanReIdent", "HumanReIdent\HumanReIdent.vcxproj", "{4F208E75-74FB-4FD8-A1DB-608347BE0F04}"
+	ProjectSection(ProjectDependencies) = postProject
+		{63ED3B12-DCAD-411A-825E-4AE39019DA96} = {63ED3B12-DCAD-411A-825E-4AE39019DA96}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

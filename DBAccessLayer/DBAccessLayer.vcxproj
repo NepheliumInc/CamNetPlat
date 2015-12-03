@@ -101,7 +101,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>C:\AdaptiveCameraNetworkPack\CamNetPlat\x64\Debug;C:\AdaptiveCameraNetworkPack\MYSQLC++BUILDS\mysqlconn\Dynamic_Build\driver\Debug;C:\AdaptiveCameraNetworkPack\MYSQLC++BUILDS\Mysql\libmysql\X64\Release;C:\Qt\Qt5.5.0\5.5\msvc2013_64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>mysqlcppconn.lib;libmysql.lib;qtmaind.lib;Qt5Cored.lib;HumanReIdent.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>mysqlcppconn.lib;libmysql.lib;qtmaind.lib;Qt5Cored.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -151,7 +151,6 @@
     <ClInclude Include="momentstructures2.h" />
     <ClInclude Include="systemdata.h" />
   </ItemGroup>
-
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

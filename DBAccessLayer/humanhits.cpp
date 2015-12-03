@@ -10,7 +10,7 @@ using namespace std;
 void HumanHits::addHumanHit(string id, string path, string hit_id, double av0, double av1, double av2, double stdDev0, double stdDev1, double stdDev2, double skew0, double skew1, double skew2)
 {
 	driver = sql::mysql::get_mysql_driver_instance();
-	con = driver->connect("tcp://127.0.0.1:3306", "root", "root");
+	con = driver->connect("tcp://127.0.0.1:3306", "root", "");
 
 	stmt = con->createStatement();
 	stmt->execute("USE camera");
