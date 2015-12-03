@@ -20,7 +20,18 @@ QtTesting::QtTesting(QWidget *parent)
 		thread->startFrame = it->startFrame;
 		thread->isNotShown = &isNotShown;
 		thread->mutex = &mutex;
+		
+		if (it->nodeId == "C008")
+		{
+			thread->cutoffRegion.push_back(Point(0, 0));
+			thread->cutoffRegion.push_back(Point(170, 0));
+			thread->cutoffRegion.push_back(Point(180, 290));
+			thread->cutoffRegion.push_back(Point(110, 450));
+			thread->cutoffRegion.push_back(Point(0, 480));
+		}
+
 		nodeToThreadMap[it->nodeId] = thread;
+
 	}
 
 	for (map<string, ThreadForNode*>::iterator it = nodeToThreadMap.begin(); it != nodeToThreadMap.end(); it++)

@@ -5,22 +5,34 @@
 
 VideoProcessing::VideoProcessing(){}
 
-int VideoProcessing::blobDetection(Mat frame, Ptr<BackgroundSubtractor> pMOG2, Mat mask, vector<models::Blob> *outBlobs){
+int VideoProcessing::blobDetection(Mat frame, Ptr<BackgroundSubtractor> pMOG2, Mat mask, vector<models::Blob> *outBlobs, vector<Point> cutOffRegions, vector<vector<Point>>* blobsInCutoff)
+{
 	vector<vector<Point>> contours;
 	contours = blbDetect.detectContours(frame, pMOG2, mask);
-	for each (vector<Point> con in contours)
+	if (cutOffRegions.size() == 0)
 	{
-		if (blbDetect.isQualifyingContour(con))
-			(*outBlobs).push_back(models::Blob(con));
+		for each (vector<Point> con in contours)
+		{
+			if (blbDetect.isQualifyingContour(con))
+				(*outBlobs).push_back(models::Blob(con));
+		}
 	}
-
+	else
+	{
+		for each (vector<Point> con in contours)
+		{
+			if (blbDetect.isQualifyingContour(con, cutOffRegions, blobsInCutoff))
+				(*outBlobs).push_back(models::Blob(con));
+		}
+	}
 	/*if (outBlobs->size() > 0)
 		__debugbreak();*/
 
 	return (*outBlobs).size();
 }
 
-int VideoProcessing::GPU_BlobDetection(Mat frame, Ptr<BackgroundSubtractor> pMOG2, Mat mask, vector<models::Blob> *outBlobs){
+int VideoProcessing::GPU_BlobDetection(Mat frame, Ptr<BackgroundSubtractor> pMOG2, Mat mask, vector<models::Blob> *outBlobs, vector<Point> cutOffRegions, vector<vector<Point>>* blobsInCutoff)
+{
 	vector<vector<Point>> contours;
 	gpu::GpuMat o_frame_gpu;
 
@@ -30,10 +42,23 @@ int VideoProcessing::GPU_BlobDetection(Mat frame, Ptr<BackgroundSubtractor> pMOG
 	float scaleY = float(frame.size().height) / RHEIGHT;
 
 	contours = blbDetect.GPU_DetectContours(frame, o_frame_gpu);
-	for each (vector<Point> con in contours)
+
+	//Scale 
+	if (cutOffRegions.size() == 0)
 	{
-		if (blbDetect.isQualifyingContour(con))
-			(*outBlobs).push_back(models::Blob(con));
+		for each (vector<Point> con in contours)
+		{
+			if (blbDetect.isQualifyingContour(con))
+				(*outBlobs).push_back(models::Blob(con));
+		}
+	}
+	else
+	{
+		for each (vector<Point> con in contours) 
+		{
+			if (blbDetect.isQualifyingContour(con, cutOffRegions, blobsInCutoff))
+				(*outBlobs).push_back(models::Blob(con));
+		}
 	}
 
 	return (*outBlobs).size();

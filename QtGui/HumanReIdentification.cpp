@@ -189,7 +189,7 @@ void segmentImage(Mat src)
 
 }
 
-int main()
+int mainX()
 {
 
 	

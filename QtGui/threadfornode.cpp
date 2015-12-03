@@ -18,6 +18,8 @@ ThreadForNode::~ThreadForNode()
 
 void ThreadForNode::run()
 {
+
+	RNG rng(12345);
 	VideoCapture cap(videoLink);
 	
 	//vector<graph::ExitPoint> exitPoints = currentNodePtr->exitPoints;
@@ -37,6 +39,8 @@ void ThreadForNode::run()
 		qDebug() << "Error loding video '" << QString::fromStdString(videoLink) << "'";
 	}
 	//cap.set(CV_CAP_PROP_POS_FRAMES, 10507);
+	//int constantval = 300;
+	Scalar cutOffRegionCol = Scalar(0, 255, 0);
 	while (cap.read(frame))
 	{
 		if (ended)
@@ -55,12 +59,29 @@ void ThreadForNode::run()
 		blobs.clear();
 		unidentifiedBlobs.clear();
 		humanBlobs.clear();
+		blobsInCutoff.clear();
 
 		string x = this->nodeId;
 
-		// blob detection
-		if (_vProcessing.GPU_BlobDetection(frameToBeRaped, pMOG2, fgMaskMOG2, &blobs) == 0)
+		vector<Point> scaledCutoffRegions;
+		resizeContour(cutoffRegion, 1.0/2.200005, 1.0/2.00000, &scaledCutoffRegions);
+		/*if (nodeId == "C008")
+			__debugbreak();*/
+		if (cutoffRegion.size() != 0)
 		{
+			for (int i = 0; i < cutoffRegion.size() - 1; i++)
+			{
+				line(frame, cutoffRegion[i], cutoffRegion[i + 1], cutOffRegionCol, 8);
+			}
+		}
+		// blob detection
+		if (_vProcessing.GPU_BlobDetection(frameToBeRaped, pMOG2, fgMaskMOG2, &blobs, scaledCutoffRegions, &blobsInCutoff) == 0)
+		{
+			if (blobsInCutoff.size() != 0)
+			{
+				drawBlobsAndWriteInFrame(frame, &blobsInCutoff, cutOffRegionCol, "OUT", Scalar(255, 0, 0));
+			}
+			
 			QImage outImage((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
 			outImage = outImage.scaled(this->releventUiLable->width(), this->releventUiLable->height(), Qt::KeepAspectRatio);
 			QPainter qpainter(&outImage);
@@ -254,6 +275,19 @@ void ThreadForNode::resizeContour(vector<Point> contour, double xScalar, double 
 		pnt.y = contour[i].y * yScalar;
 		cnt->push_back(pnt);
 	}
+}
+
+void ThreadForNode::drawBlobsAndWriteInFrame(Mat frame, vector<vector<Point>>* blobs, Scalar color,string writing, Scalar writingColor)
+{
+	vector< vector< Point> >::iterator itc2 = blobs->begin();
+	while (itc2 != blobs->end()) {
+		Rect mr = boundingRect(Mat(*itc2));
+		rectangle(frame, mr, color, 3);
+		Point textOrg(mr.x + mr.width / 2, mr.y + mr.height / 2);
+		putText(frame, writing, textOrg, FONT_HERSHEY_COMPLEX_SMALL, 0.7, writingColor, 1, CV_AA);
+		++itc2;
+	}
+
 }
 
 void ThreadForNode::mockFunction(vector<models::Blob> *blobs, vector<models::HumanBlob> *trackingHumanBlobs, VideoCapture *cap)

@@ -45,6 +45,8 @@ public:
 	QMutex* mutex;
 	int startFrame;
 	QLabel* releventUiLable;
+	vector<Point> cutoffRegion;
+	vector<vector<Point>> blobsInCutoff;
 
 signals:
 	void sendFrameToMain(QImage outImage, ThreadForNode* thread);
@@ -53,6 +55,7 @@ signals:
 
 private:
 	void resizeContour(vector<Point> contour, double xScalar, double yScalar, vector<Point>* cnt);
+	void drawBlobsAndWriteInFrame(Mat frame, vector<vector<Point>>* blobs, Scalar color, string writing, Scalar writingColor);
 	MessagePasser* msgPasser;
 	Mat frame;
 	Mat frameToBeRaped;
