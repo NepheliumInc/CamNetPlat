@@ -65,22 +65,50 @@ int VideoProcessing::GPU_BlobDetection(Mat frame, Ptr<BackgroundSubtractor> pMOG
 }
 
 
-int VideoProcessing::humanDetection(vector<models::Blob> *blobs, Mat *frame, vector<models::HumanBlob> *outHumanBlobs, VideoCapture *cap, string link)
+int VideoProcessing::humanDetection(vector<models::Blob> *blobs, Mat *frame, vector<models::HumanBlob> *outHumanBlobs, VideoCapture *cap, string link, SVM__Class* svmPointer) 
 {
-	for (vector<models::Blob>::iterator i = blobs->begin(); i != blobs->end(); i++)
+
+
+	// uncomment for senior dataset ///////////////////////////////////////
+	/*for (vector<models::Blob>::iterator i = blobs->begin(); i != blobs->end(); i++)
 	{
 		models::HumanBlob hb = models::HumanBlob(*i);
 		hb.profileID = "NULL";
 		outHumanBlobs->push_back(hb);
 	}
-	return outHumanBlobs->size();
+	return outHumanBlobs->size();*/
 
 
 
 	vector<vector<Point>> blobContourVector;
-	for (vector<models::Blob>::iterator it = blobs->begin(); it != blobs->end(); it++)
+	
+	if (link == "C:/AdaptiveCameraNetworkPack/Videos/PRG6.avi"){
+		for (vector<models::Blob>::iterator it = blobs->begin(); it != blobs->end(); it++)
+		{
+			Rect roi = boundingRect(it->getContour());
+			Mat rectBlob = (*frame)(roi);
+			Mat rectBlobClone = rectBlob.clone();
+			namedWindow("HUMAN", CV_WINDOW_NORMAL);
+			namedWindow("NON HUMAN", CV_WINDOW_NORMAL);
+			cvWaitKey(1);
+			bool temp = svmPointer->predict_SingleSVMfromMat(rectBlob);
+			if (temp)
+			{
+				imshow("HUMAN", rectBlobClone);
+				blobContourVector.push_back(it->getContour());
+			}
+			else
+			{
+				imshow("NON HUMAN", rectBlobClone);
+			}
+		}
+	}
+	else
 	{
-		blobContourVector.push_back(it->getContour());
+		for (vector<models::Blob>::iterator it = blobs->begin(); it != blobs->end(); it++)
+		{
+			blobContourVector.push_back(it->getContour());
+		}
 	}
 	BlobDetection blbDetection;
 	int time = static_cast<int>(cap->get(CV_CAP_PROP_POS_MSEC));
@@ -95,7 +123,7 @@ int VideoProcessing::humanDetection(vector<models::Blob> *blobs, Mat *frame, vec
 	{
 		timeStr = to_string(mins) + "." + to_string(seconds);
 	}
-	stringstream ss(link);
+	stringstream ss(link); 
 	string item;
 	vector<string> tokens;
 	while (getline(ss, item, '/')) {
@@ -106,7 +134,7 @@ int VideoProcessing::humanDetection(vector<models::Blob> *blobs, Mat *frame, vec
 	{
 		/*if (profiledBlobs[i].Id != "UNKNOWN")
 		{*/
-			models::HumanBlob hb = models::HumanBlob(blobs->at(i));
+			models::HumanBlob hb = models::HumanBlob(models::Blob(blobContourVector[i]));
 			hb.profileID = profiledBlobs[i].Id;
 			outHumanBlobs->push_back(hb);
 		//}

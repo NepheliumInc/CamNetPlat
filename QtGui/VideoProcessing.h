@@ -6,6 +6,7 @@
 #include "Models.h"
 #include "graph.h"
 #include "BlobDetection.h"
+#include "svm__class.h"
 
 // blob detection
 // in	: *frame
@@ -29,7 +30,7 @@ public:
 	VideoProcessing();
 	int blobDetection(Mat frame, Ptr<BackgroundSubtractor> pMOG2, Mat mask, vector<models::Blob> *outBlobs, vector<Point> cutOffRegions, vector<vector<Point>>* blobsInCutoff);
 	int GPU_BlobDetection(Mat frame, Ptr<BackgroundSubtractor> pMOG2, Mat mask, vector<models::Blob> *outBlobs, vector<Point> cutOffRegions, vector<vector<Point>>* blobsInCutoff);
-	int humanDetection(vector<models::Blob> *blobs, Mat *frame, vector<models::HumanBlob> *outHumanBlobs, VideoCapture *cap, string link);
+	int humanDetection(vector<models::Blob> *blobs, Mat *frame, vector<models::HumanBlob> *outHumanBlobs, VideoCapture *cap, string link,SVM__Class* svmPointer);
 
 	void dataAssociation(
 		vector<models::Blob> *blobs,

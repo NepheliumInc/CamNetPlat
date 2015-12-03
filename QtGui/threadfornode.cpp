@@ -121,7 +121,7 @@ void ThreadForNode::run()
 		if (!(unidentifiedBlobs.empty())) // unindentified >>> human
 		{
 			// done through hardcoded function
-			_vProcessing.humanDetection(&unidentifiedBlobs, &frameToBeRaped, &humanBlobs, &cap, this->videoLink);
+			_vProcessing.humanDetection(&unidentifiedBlobs, &frameToBeRaped, &humanBlobs, &cap, this->videoLink, svmPointer);
 		}
 		
 		if (!(humanBlobs.empty())) // human >>> trackinghuman

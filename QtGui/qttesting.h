@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include "threadfornode.h"
+#include "svm__class.h"
 
 class QtTesting : public QMainWindow
 {
@@ -17,12 +18,13 @@ public:
 
 	QWaitCondition isNotShown;
 	QMutex mutex;
-
+	SVM__Class svmCam;
 
 	public slots:
 	void recieveFrameFromThreads(QImage outImage, ThreadForNode* thread);
 	void finishedThreads();
 	void wakeForFrameCount();
+	
 
 private:
 	Ui::QtTestingClass ui;

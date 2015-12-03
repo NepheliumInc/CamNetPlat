@@ -175,6 +175,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="graph.cpp" />
+    <ClCompile Include="hogdescriptor_class.cpp" />
     <ClCompile Include="HumanBlob.cpp" />
     <ClCompile Include="HumanReIdentification.cpp" />
     <ClCompile Include="mainGUI.cpp" />
@@ -183,6 +184,7 @@
     <ClCompile Include="node.cpp" />
     <ClCompile Include="ProfileTransferObj.cpp" />
     <ClCompile Include="qttesting.cpp" />
+    <ClCompile Include="svm__class.cpp" />
     <ClCompile Include="threadfornode.cpp" />
     <ClCompile Include="TrackingObject.cpp" />
     <ClCompile Include="VideoProcessing.cpp" />
@@ -239,6 +241,7 @@
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
     </CustomBuild>
     <ClInclude Include="graph.h" />
+    <ClInclude Include="hogdescriptor_class.h" />
     <ClInclude Include="Models.h" />
     <CustomBuild Include="threadfornode.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
@@ -277,6 +280,7 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB "-IC:\AdaptiveCameraNetworkPack\boost_1_57_0\boost_1_57_0" "-IC:\AdaptiveCameraNetworkPack\MYSQLC++BUILDS\mysqlconn" "-IC:\AdaptiveCameraNetworkPack\MYSQLC++BUILDS\Mysql\libmysql\X64\Release" "-IC:\AdaptiveCameraNetworkPack\mysql-connector-c++-1.1.1" "-IC:\AdaptiveCameraNetworkPack\mysql-connector-c++-1.1.1\driver" "-IC:\AdaptiveCameraNetworkPack\mysql-server-5.7\include" "-IC:\AdaptiveCameraNetworkPack\opencv\build\include\opencv2" "-IC:\AdaptiveCameraNetworkPack\opencv\build\include\opencv" "-IC:\AdaptiveCameraNetworkPack\opencv\build\include" "-IC:\AdaptiveCameraNetworkPack\Qt\include" "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets"</Command>
     </CustomBuild>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="svm__class.h" />
     <ClInclude Include="VideoProcessing.h" />
   </ItemGroup>
   <ItemGroup>
@@ -332,6 +336,9 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="camera6.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

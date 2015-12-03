@@ -38,7 +38,7 @@ void SVM__Class::testingSet(QString path){		//overloaded mtd to take limited num
 
 void SVM__Class::train_svm(){
 	
-	params.svm_type = CvSVM::C_SVC; // nu
+	params.svm_type = CvSVM::C_SVC; 
 	params.kernel_type = CvSVM::POLY; // CvSVM::LINEAR; // CvSVM::POLY
 	params.degree = 1.4;
 	//params.gamma = 3;// change n check // Parameter gamma of a kernel function 
@@ -89,6 +89,34 @@ bool SVM__Class::predict_Singlesvm(string filepath){
 	bool predicted_result = false;
 
 	image = imread(filepath, CV_LOAD_IMAGE_COLOR);
+
+	cv::resize(image, resizedImage, resizeForHog);
+	cv::cvtColor(resizedImage, resizedGrayImage, CV_BGR2GRAY);
+	//imshow("Image", resizedGrayImage); 
+	HogDescriptor_Class hd;
+	Mat mx = hd.generateDescriptorMat(resizedGrayImage);
+	descriptor.push_back(mx);
+	svm.predict(descriptor, result);
+	float val = result.at<float>(0, 0);
+	if (val == -1.0){
+		predicted_result = false;
+		qDebug() << "------------------------------------------ it is not human";
+	}
+	else if (val == 1.0)
+	{
+		predicted_result = true;
+		qDebug() << "------------------------------------------ Human!!!!!!!!";
+	}
+	return predicted_result;
+}
+
+bool SVM__Class::predict_SingleSVMfromMat(Mat image){
+	Mat resizedImage;
+	Mat resizedGrayImage;
+	Mat descriptor;
+	Size resizeForHog(64, 128);
+	Mat result;
+	bool predicted_result = false;	
 
 	cv::resize(image, resizedImage, resizeForHog);
 	cv::cvtColor(resizedImage, resizedGrayImage, CV_BGR2GRAY);

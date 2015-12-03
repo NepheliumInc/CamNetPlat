@@ -8,6 +8,7 @@ QtTesting::QtTesting(QWidget *parent)
 
 	graph::Graph _graph = graph::Graph();
 	_graph.initGraph();
+	svmCam.load_svm("camera6.xml");
 
 	vector<graph::Node> nodes = _graph.getAllNodes();
 
@@ -20,7 +21,8 @@ QtTesting::QtTesting(QWidget *parent)
 		thread->startFrame = it->startFrame;
 		thread->isNotShown = &isNotShown;
 		thread->mutex = &mutex;
-		
+		thread->svmPointer = &svmCam;
+
 		if (it->nodeId == "C008")
 		{
 			thread->cutoffRegion.push_back(Point(0, 0));

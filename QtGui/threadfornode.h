@@ -19,6 +19,7 @@
 
 #include "QtCore\qmutex.h"
 #include "QtCore\qwaitcondition.h"
+#include "svm__class.h"
 
 using namespace models;
 using namespace cv;
@@ -37,6 +38,7 @@ public:
 	void waitForAcknowledge();
 	void mockFunction(vector<models::Blob> *blobs, vector<models::HumanBlob> *trackingHumanBlobs, VideoCapture *cap);
 
+	SVM__Class* svmPointer;
 	string videoLink; // temp
 	string nodeId;
 	vector<graph::ExitPoint> exitPoints;

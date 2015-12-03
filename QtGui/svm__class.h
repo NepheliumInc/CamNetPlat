@@ -56,6 +56,7 @@ public:
 	void SVM__Class::load_svm(string filename);
 	void SVM__Class::predict_svm();
 	bool SVM__Class::predict_Singlesvm(string filepath);
+	bool SVM__Class::predict_SingleSVMfromMat(Mat image);
 	void SVM__Class::show_predictionReport();
 	void SVM__Class::fileIterator(QString filepath, Mat *descriptor, int *counter,char lable);
 	void SVM__Class::print_Mat(Mat *mat_toprint);
