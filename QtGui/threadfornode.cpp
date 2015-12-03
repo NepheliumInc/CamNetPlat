@@ -57,7 +57,7 @@ void ThreadForNode::run()
 		string x = this->nodeId;
 
 		// blob detection
-		if (_vProcessing.blobDetection(frameToBeRaped, pMOG2, fgMaskMOG2, &blobs) == 0)
+		if (_vProcessing.GPU_BlobDetection(frameToBeRaped, pMOG2, fgMaskMOG2, &blobs) == 0)
 		{
 			QImage outImage((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
 			outImage = outImage.scaled(this->releventUiLable->width(), this->releventUiLable->height(), Qt::KeepAspectRatio);
@@ -75,6 +75,14 @@ void ThreadForNode::run()
 			continue;	// If no blobs detected continue while
 		}
 
+		// scalling for gpu outputs
+		vector<Point> temp;
+		for (vector<models::Blob>::iterator i = blobs.begin(); i != blobs.end(); i++)
+		{
+			resizeContour(i->getContour(), 2.200005, 2.000000, &temp);
+			i->setContour(temp);
+			temp.clear();
+		}
 		//mockFunction(&blobs, &trackingHumanBlobs, &cap);
 
 		if (trackingHumanBlobs.empty()) // blobs >>> unindentified
