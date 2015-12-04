@@ -65,7 +65,7 @@ int VideoProcessing::GPU_BlobDetection(Mat frame, Ptr<BackgroundSubtractor> pMOG
 }
 
 
-int VideoProcessing::humanDetection(vector<models::Blob> *blobs, Mat *frame, vector<models::HumanBlob> *outHumanBlobs, VideoCapture *cap, string link, SVM__Class* svmPointer) 
+int VideoProcessing::humanDetection(vector<models::Blob> *blobs, Mat *frame, vector<models::HumanBlob> *outHumanBlobs, VideoCapture *cap, string link, SVM__Class* svmPointer, Connection* mySqlConnection)
 {
 
 
@@ -88,18 +88,18 @@ int VideoProcessing::humanDetection(vector<models::Blob> *blobs, Mat *frame, vec
 			Rect roi = boundingRect(it->getContour());
 			Mat rectBlob = (*frame)(roi);
 			Mat rectBlobClone = rectBlob.clone();
-			namedWindow("HUMAN", CV_WINDOW_NORMAL);
-			namedWindow("NON HUMAN", CV_WINDOW_NORMAL);
-			cvWaitKey(1);
+			//namedWindow("HUMAN", CV_WINDOW_NORMAL);
+			//namedWindow("NON HUMAN", CV_WINDOW_NORMAL);
+			//cvWaitKey(1);
 			bool temp = svmPointer->predict_SingleSVMfromMat(rectBlob);
 			if (temp)
 			{
-				imshow("HUMAN", rectBlobClone);
+				//imshow("HUMAN", rectBlobClone);
 				blobContourVector.push_back(it->getContour());
 			}
 			else
 			{
-				imshow("NON HUMAN", rectBlobClone);
+				//imshow("NON HUMAN", rectBlobClone);
 			}
 		}
 	}
@@ -129,15 +129,21 @@ int VideoProcessing::humanDetection(vector<models::Blob> *blobs, Mat *frame, vec
 	while (getline(ss, item, '/')) {
 		tokens.push_back(item);
 	}
-	vector<BlobId> profiledBlobs = blbDetection.matchProfilesWithBlobs(blobContourVector, timeStr, tokens[tokens.size() - 1]);
+	vector<BlobId> profiledBlobs = blbDetection.matchProfilesWithBlobs(blobContourVector, timeStr, tokens[tokens.size() - 1],mySqlConnection);
 	for (int i = 0; i < profiledBlobs.size(); i++)
 	{
-		/*if (profiledBlobs[i].Id != "UNKNOWN")
-		{*/
-			models::HumanBlob hb = models::HumanBlob(models::Blob(blobContourVector[i]));
-			hb.profileID = profiledBlobs[i].Id;
-			outHumanBlobs->push_back(hb);
-		//}
+
+		models::HumanBlob hb = models::HumanBlob(models::Blob(blobContourVector[i]));
+		hb.profileID = profiledBlobs[i].Id;
+
+		//Recording profile hit in db
+		ProfileHits* pLogger = new ProfileHits(mySqlConnection);
+		pLogger->profileLog(link, profiledBlobs[i].Id, timeStr);
+		delete pLogger;
+		pLogger = NULL;
+
+		outHumanBlobs->push_back(hb);
+
 	}
 
 	/*if (outHumanBlobs->size() > 0)

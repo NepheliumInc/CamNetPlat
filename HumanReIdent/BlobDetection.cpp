@@ -8,17 +8,11 @@
 #define RWIDTH 320 //640 //800
 #define RHEIGHT 240 //480 //600
 
-#define RWIDTH2 800
-#define RHEIGHT2 600
-
-#define MIN_BLOB 10
-#define MAX_BLOB 500
-
 BlobDetection::BlobDetection()
 {
-	pMOG2_g = gpu::MOG2_GPU(30);
+	pMOG2_g = gpu::MOG2_GPU();
 	pMOG2_g.history = 300; //300;
-	pMOG2_g.varThreshold = 15; //64; //128; //64; //32;//; 
+	pMOG2_g.varThreshold = 64; //64; //128; //64; //32;//; 
 	pMOG2_g.bShadowDetection = true; // true;//
 
 	gpurgb2 = vector< gpu::GpuMat>(3);
@@ -36,21 +30,34 @@ vector< vector< Point> > BlobDetection::detectContours(Mat frame, Ptr< Backgroun
 {
 	vector< vector< Point> > result;
 
+	cvNamedWindow("Original"	, CV_WINDOW_NORMAL);
+	cvNamedWindow("Blurred"		, CV_WINDOW_NORMAL);
+	//cvNamedWindow("fgMaskMOG2X"	, CV_WINDOW_NORMAL);
+	cvNamedWindow("Background Subtracted", CV_WINDOW_NORMAL);
+	cvNamedWindow("Shadow Removed"	, CV_WINDOW_NORMAL);
+
 	Mat fgMaskMOG2X = fgMaskMOG2.clone(); 
 
 	Mat ContourImg; 
 	Ptr< BackgroundSubtractor> pMOG2 = pMOG2Pointer; 
 	Mat element = getStructuringElement(MORPH_RECT, Size(7, 7), Point(3, 3));
-
+	imshow("Original", frame);
 
 	//PreProcess
 	blur(frame, frame, Size(4, 4));
+	imshow("Blurred", frame);
 
 	//Background subtraction
 	pMOG2->operator()(frame, fgMaskMOG2X, -1);
-	morphologyEx(fgMaskMOG2X, frame, CV_MOP_CLOSE, element);
-	//threshold(frame, frame, 100, 180, CV_THRESH_BINARY);
+	//imshow("fgMaskMOG2X", frame);
 
+	morphologyEx(fgMaskMOG2X, frame, CV_MOP_CLOSE, element);
+	imshow("Background Subtracted", frame);
+
+	threshold(frame, frame, 180, 255, CV_THRESH_BINARY);
+	imshow("Shadow Removed", frame);
+
+	cvWaitKey(1);
 	ContourImg = frame.clone();
 	findContours(ContourImg,
 		result, // a vector of contours
@@ -80,13 +87,13 @@ vector<vector<Point>> BlobDetection::GPU_DetectContours(Mat o_frame, gpu::GpuMat
 	//AAtime = getTickCount();
 	
 	//blur red blue and green channels
-	gpu::split(r_frame_gpu, gpurgb);
+	/*gpu::split(r_frame_gpu, gpurgb);
 	gpu::blur(gpurgb[0], gpurgb2[0], Size(3, 3));
 	gpu::blur(gpurgb[1], gpurgb2[1], Size(3, 3));
 	gpu::blur(gpurgb[2], gpurgb2[2], Size(3, 3));
-	gpu::merge(gpurgb2, r_blur_gpu);
+	gpu::merge(gpurgb2, r_blur_gpu);*/
 	//mog
-	pMOG2_g.operator()(r_blur_gpu, Mog_Mask_g, -1);
+	pMOG2_g.operator()(r_frame_gpu, Mog_Mask_g, -1);
 	Mog_Mask_g.download(Mog_Mask);
 	//mopnology
 	//gpu::morphologyEx(Mog_Mask_g, Mog_MaskMorpho_g, CV_MOP_CLOSE, element);
@@ -196,10 +203,11 @@ bool BlobDetection::isQualifyingContour(vector<Point> contour, vector<Point>cutO
 }
 
 
-vector<BlobId> BlobDetection::matchProfilesWithBlobs(vector< vector< Point> > contours, string absoluteTime, string cameraNode){
-	HumanHits hh;
+vector<BlobId> BlobDetection::matchProfilesWithBlobs(vector< vector< Point> > contours, string absoluteTime, string cameraNode, Connection* mysqlConnection)
+{
+	HumanHits* hh = new HumanHits(mysqlConnection);
 	vector<BlobId> profiledBlobs;
-	vector<Profile> profilesExisting = hh.getAllProfilesInSecond(absoluteTime, cameraNode);
+	vector<Profile> profilesExisting = hh->getAllProfilesInSecond(absoluteTime, cameraNode);
 
 	//Start comparing blob with existing profile
 	int counter = 0;
@@ -246,7 +254,8 @@ vector<BlobId> BlobDetection::matchProfilesWithBlobs(vector< vector< Point> > co
 	}
 
 
-
+	delete hh;
+	hh = NULL;
 	return profiledBlobs;
 }
 
