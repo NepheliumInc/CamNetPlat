@@ -31,8 +31,7 @@ public:
 	VideoProcessing();
 	int blobDetection(Mat frame, Ptr<BackgroundSubtractor> pMOG2, Mat mask, vector<models::Blob> *outBlobs, vector<Point> cutOffRegions, vector<vector<Point>>* blobsInCutoff);
 	int GPU_BlobDetection(Mat frame, Ptr<BackgroundSubtractor> pMOG2, Mat mask, vector<models::Blob> *outBlobs, vector<Point> cutOffRegions, vector<vector<Point>>* blobsInCutoff);
-	int humanDetection(vector<models::Blob> *blobs, Mat *frame, vector<models::HumanBlob> *outHumanBlobs, VideoCapture *cap, string link, SVM__Class* svmPointer,  Connection* mySqlConnection);
-
+	int humanDetection(vector<models::Blob> *blobs, Mat *frame, vector<models::HumanBlob> *outHumanBlobs, VideoCapture *cap, string link, SVM__Class* svmPointer, Connection* mySqlConnection, vector<string>* profilesInASecondToBeLoggInDB, vector<string>* currentProcessingSecond);
 	void dataAssociation(
 		vector<models::Blob> *blobs,
 		vector<models::HumanBlob> *trackingHumanBlobs,

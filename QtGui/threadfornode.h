@@ -50,6 +50,8 @@ public:
 	vector<Point> cutoffRegion;
 	vector<vector<Point>> blobsInCutoff;
 	Connection* mysqlConnection;
+	vector<string> profilesInASecondToBeLoggInDB;
+	vector<string> currentProcessingSecond;
 
 signals:
 	void sendFrameToMain(QImage outImage, ThreadForNode* thread);

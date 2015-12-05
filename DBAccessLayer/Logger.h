@@ -19,6 +19,7 @@
 #include "momentstructures2.h"
 
 #include <stdio.h>
+#include <set>
 using namespace std;
 using namespace sql;
 using namespace mysql;
@@ -30,11 +31,17 @@ public:
 	ProfileHits(Connection *con);
 	~ProfileHits();
 	void profileLog(string Video_ID , string Profile_ID , string TimeStamp);
+	
+	void ProfileHits::multiProfileLog(string Video_ID, vector<string>* Profile_IDs, string TimeStamp);
 	void initDB();
+
+
 private:
 	MySQL_Driver *driver;
 	Connection *con;
 	Statement *stmt;
+	map<string, string> dbLinkMap;
+	map<string, int> dbIdMap;
 };
 
 #endif 

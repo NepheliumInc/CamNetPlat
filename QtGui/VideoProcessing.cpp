@@ -65,7 +65,7 @@ int VideoProcessing::GPU_BlobDetection(Mat frame, Ptr<BackgroundSubtractor> pMOG
 }
 
 
-int VideoProcessing::humanDetection(vector<models::Blob> *blobs, Mat *frame, vector<models::HumanBlob> *outHumanBlobs, VideoCapture *cap, string link, SVM__Class* svmPointer, Connection* mySqlConnection)
+int VideoProcessing::humanDetection(vector<models::Blob> *blobs, Mat *frame, vector<models::HumanBlob> *outHumanBlobs, VideoCapture *cap, string link, SVM__Class* svmPointer, Connection* mySqlConnection, vector<string>* profilesInASecondToBeLoggInDB, vector<string>* currentProcessingTime)
 {
 
 
@@ -88,12 +88,13 @@ int VideoProcessing::humanDetection(vector<models::Blob> *blobs, Mat *frame, vec
 			Rect roi = boundingRect(it->getContour());
 			Mat rectBlob = (*frame)(roi);
 			Mat rectBlobClone = rectBlob.clone();
-			//namedWindow("HUMAN", CV_WINDOW_NORMAL);
+			
 			//namedWindow("NON HUMAN", CV_WINDOW_NORMAL);
 			//cvWaitKey(1);
 			bool temp = svmPointer->predict_SingleSVMfromMat(rectBlob);
 			if (temp)
 			{
+				//namedWindow("HUMAN", CV_WINDOW_NORMAL);
 				//imshow("HUMAN", rectBlobClone);
 				blobContourVector.push_back(it->getContour());
 			}
@@ -126,21 +127,53 @@ int VideoProcessing::humanDetection(vector<models::Blob> *blobs, Mat *frame, vec
 	stringstream ss(link); 
 	string item;
 	vector<string> tokens;
-	while (getline(ss, item, '/')) {
+	while (getline(ss, item, '/')) 
+	{
 		tokens.push_back(item);
 	}
+
 	vector<BlobId> profiledBlobs = blbDetection.matchProfilesWithBlobs(blobContourVector, timeStr, tokens[tokens.size() - 1],mySqlConnection);
+	
+	
+
+
 	for (int i = 0; i < profiledBlobs.size(); i++)
 	{
 
 		models::HumanBlob hb = models::HumanBlob(models::Blob(blobContourVector[i]));
 		hb.profileID = profiledBlobs[i].Id;
 
-		//Recording profile hit in db
-		ProfileHits* pLogger = new ProfileHits(mySqlConnection);
-		pLogger->profileLog(link, profiledBlobs[i].Id, timeStr);
-		delete pLogger;
-		pLogger = NULL;
+		///Check if new second and log Profiles to DB if accumilated 
+		if (currentProcessingTime->at(0) != timeStr )
+		{
+			if (profilesInASecondToBeLoggInDB->size() != 0)
+			{
+				ProfileHits* pLogger = new ProfileHits(mySqlConnection);
+				pLogger->multiProfileLog(link, profilesInASecondToBeLoggInDB, currentProcessingTime->at(0));
+				delete pLogger;
+				pLogger = NULL;
+			}
+			profilesInASecondToBeLoggInDB->clear();
+			currentProcessingTime->clear(); 
+			currentProcessingTime->push_back(timeStr);
+			
+		}
+		//Add to profile buffer within range of one second
+		bool alreadyAvailable = false;
+		for (int j = 0; j < profilesInASecondToBeLoggInDB->size(); j++)
+		{
+			if (profilesInASecondToBeLoggInDB->at(j) == profiledBlobs[i].Id)
+			{
+				alreadyAvailable = true;
+				break;
+			}
+		}
+		if (!alreadyAvailable && profiledBlobs[i].Id !="UNKNOWN")
+		{
+			profilesInASecondToBeLoggInDB->push_back(profiledBlobs[i].Id);
+		}
+		
+
 
 		outHumanBlobs->push_back(hb);
 

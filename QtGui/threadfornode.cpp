@@ -9,6 +9,7 @@ ThreadForNode::ThreadForNode()
 		this, SIGNAL(sendProfileToNode(ProfileTransferObj, ThreadForNode*)), 
 		msgPasser, SLOT(passMessage(ProfileTransferObj, ThreadForNode*))
 		);
+	currentProcessingSecond.push_back("0.0");
 }
 
 ThreadForNode::~ThreadForNode()
@@ -38,7 +39,7 @@ void ThreadForNode::run()
 	{
 		qDebug() << "Error loding video '" << QString::fromStdString(videoLink) << "'";
 	}
-	//cap.set(CV_CAP_PROP_POS_FRAMES, 10507);
+	cap.set(CV_CAP_PROP_POS_FRAMES, 4000);
 	//int constantval = 300;
 	Scalar cutOffRegionCol = Scalar(0, 255, 0);
 	while (cap.read(frame))
@@ -121,14 +122,14 @@ void ThreadForNode::run()
 		if (!(unidentifiedBlobs.empty())) // unindentified >>> human
 		{
 			// done through hardcoded function
-			_vProcessing.humanDetection(&unidentifiedBlobs, &frameToBeRaped, &humanBlobs, &cap, this->videoLink, svmPointer, mysqlConnection);
+			_vProcessing.humanDetection(&unidentifiedBlobs, &frameToBeRaped, &humanBlobs, &cap, this->videoLink, svmPointer, mysqlConnection, &profilesInASecondToBeLoggInDB, &currentProcessingSecond);
 		}
 		
 		if (!(humanBlobs.empty())) // human >>> trackinghuman
 		{
 			//_vProcessing.checkInProfiles(&humanBlobs, &possibleProfileList, &missingHumanBlobs, &trackingHumanBlobs);
 		}
-		
+		trackingHumanBlobs.clear();//Reevaluate with mainflow
 		if (!(humanBlobs.empty()))
 		{
 			_vProcessing.initTrackingObject(&humanBlobs, &trackingHumanBlobs);

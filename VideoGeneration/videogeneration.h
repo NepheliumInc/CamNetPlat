@@ -20,6 +20,8 @@
 
 #include "QtGui\qimage.h"
 #include "QtGui\qpainter.h"
+#include "QtCore\qdebug.h"
+#include "QtCore\qstring.h"
 using namespace std;
 using namespace sql;
 using namespace mysql;

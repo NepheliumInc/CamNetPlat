@@ -41,10 +41,10 @@ void VideoGeneration::on_generateVideoPushButton_clicked()
 
 	
 	string cameraIds[] = { 
-		"cam6_video", 
-		"cam1_video", 
-		"cam28_video",
-		"cam23_video"
+		"camera_node_6_log", 
+		"camera_node_1_log", 
+		"camera_node_28_log",
+		"camera_node_23_log"
 	};
 	int cameraIdsSize = sizeof(cameraIds) / sizeof(*cameraIds);
 	string finalJoinQuery = "";
@@ -89,9 +89,10 @@ void VideoGeneration::on_generateVideoPushButton_clicked()
 
 		int minutes = (int)ts.timestamp;
 		int seconds = (int)((ts.timestamp-(double)minutes)*100.0);
-
+		int milis = ((ts.timestamp - (double)minutes)*100.0-seconds)*1000;
 		
-		int milliseconds = (minutes * 60 + seconds )* 1000;
+		int milliseconds = (minutes * 60 + seconds) * 1000 + milis;
+		qDebug() << "Extracted Frames for time " + QString::number(ts.timestamp) + ", in camera " + QString::fromStdString(camId);
 		cam.set(CV_CAP_PROP_POS_MSEC, milliseconds);
 		
 		
@@ -107,7 +108,7 @@ void VideoGeneration::on_generateVideoPushButton_clicked()
 			double fontScale = 1;
 			int thickness = 3;
 			cv::Point textOrg1(10, 50);
-			putText(frame, "CAM:" + ts.cameraId, textOrg1, fontFace, fontScale, Scalar::all(250),2);
+			putText(frame, "CAM:" + ts.cameraId, textOrg1, fontFace, fontScale, Scalar::all(0),2);
 			cv::Point textOrg2(500, 50);
 			video.push_back(frame);
 		}
