@@ -190,7 +190,7 @@ void segmentImage(Mat src)
 
 }
 
-int mainRI()
+int main()
 {
 
 	
@@ -206,12 +206,12 @@ int mainRI()
 	Ptr< BackgroundSubtractor> pMOG2Pointer; //MOG2 Background subtractor
 	pMOG2Pointer = new BackgroundSubtractorMOG2(300, 32, true);//300,0.0);
 	string prefix = "C:\\AdaptiveCameraNetworkPack\\Videos\\";
-	string files[] = {	"PRG6.avi",
+	string files[] = {	"PRG14.avi",
 						"PRG1.avi", 
 						"PRG28.avi",
 						"PRG22.avi",
 						"PRG7.avi",
-						"PRG14.avi" ,
+						"PRG6.avi" ,
 						"PRG23.avi" ,
 						"PRG29.avi" };
 	for (string file : files){

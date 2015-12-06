@@ -2,7 +2,7 @@
 #include "qttesting.h"
 #include "QtWidgets\qapplication.h"
 
-int main(int argc, char* argv[])
+int mainGH(int argc, char* argv[])
 {
 	QApplication a(argc, argv);
 	QtTesting w;

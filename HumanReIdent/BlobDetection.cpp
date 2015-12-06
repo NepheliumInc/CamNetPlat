@@ -232,7 +232,7 @@ vector<BlobId> BlobDetection::matchProfilesWithBlobs(vector< vector< Point> > co
 				);
 
 		
-			if (abs(currentCentrePoint.x - savedProfile.centreX) > 120 || abs(currentCentrePoint.y - savedProfile.centreY) > 100)
+			if (abs(currentCentrePoint.x - savedProfile.centreX) > 200 || abs(currentCentrePoint.y - savedProfile.centreY) > 200)
 			{
 				continue;
 			}

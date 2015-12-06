@@ -33,6 +33,8 @@ QtTesting::QtTesting(QWidget *parent)
 
 		MySQL_Driver *driver = sql::mysql::get_mysql_driver_instance();
 		thread->mysqlConnection = driver->connect("tcp://127.0.0.1:3306", "root", "root");
+
+		//Cutoff Regions
 		if (it->nodeId == "C008")
 		{
 			thread->cutoffRegion.push_back(Point(0, 0));
@@ -40,6 +42,14 @@ QtTesting::QtTesting(QWidget *parent)
 			thread->cutoffRegion.push_back(Point(180, 290));
 			thread->cutoffRegion.push_back(Point(110, 450));
 			thread->cutoffRegion.push_back(Point(0, 480));
+		}
+		else if (it->nodeId == "C004")
+		{
+			thread->cutoffRegion.push_back(Point(	0		, 20	));
+			thread->cutoffRegion.push_back(Point(	296		, 30	));
+			thread->cutoffRegion.push_back(Point(	300		, 267	));
+			thread->cutoffRegion.push_back(Point(	136		, 479	));
+			thread->cutoffRegion.push_back(Point(	0		, 476	));
 		}
 
 		nodeToThreadMap[it->nodeId] = thread;
