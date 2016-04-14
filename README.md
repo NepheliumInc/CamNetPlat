@@ -4,4 +4,4 @@ Person re-identification across CCTV networks with disjoint camera fields of vie
 
 youtube link for demo : <a href="http://www.youtube.com/watch?feature=player_embedded&v=t4Uz9LWimzA
 " target="_blank"><img src="http://img.youtube.com/vi/t4Uz9LWimzA/0.jpg" 
-alt="Demo Video of CamnetPlat - Nephelium" width="240" height="180" border="10" /></a> 
+alt="Demo Video of CamnetPlat - Nephelium" width="80%" border="10" /></a> 
